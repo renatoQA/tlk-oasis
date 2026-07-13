@@ -1,26 +1,66 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0d0715;
+  --foreground: #f5f1fb;
+  --card: #17101f;
+  --card-hover: #1e1628;
+  --border: #362a45;
+  --muted: #9c8bb0;
+
+  --brand-pink: #ec4899;
+  --brand-pink-light: #f9a8d4;
+  --brand-purple: #9333ea;
+  --brand-purple-light: #c084fc;
+  --brand-gradient: linear-gradient(135deg, var(--brand-purple) 0%, var(--brand-pink) 100%);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-hover: var(--card-hover);
+  --color-border: var(--border);
+  --color-muted: var(--muted);
+  --color-brand-pink: var(--brand-pink);
+  --color-brand-pink-light: var(--brand-pink-light);
+  --color-brand-purple: var(--brand-purple);
+  --color-brand-purple-light: var(--brand-purple-light);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 20% -10%, rgba(147, 51, 234, 0.25), transparent),
+    radial-gradient(ellipse 80% 50% at 80% 0%, rgba(236, 72, 153, 0.18), transparent);
+  background-attachment: fixed;
+  min-height: 100dvh;
+}
+
+::selection {
+  background: var(--brand-pink);
+  color: white;
+}
+
+.brand-gradient-text {
+  background: var(--brand-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.brand-gradient-bg {
+  background: var(--brand-gradient);
+}
+
+.scrollbar-brand::-webkit-scrollbar {
+  width: 8px;
+}
+.scrollbar-brand::-webkit-scrollbar-thumb {
+  background: var(--brand-purple);
+  border-radius: 9999px;
 }
