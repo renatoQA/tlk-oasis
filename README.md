@@ -53,7 +53,7 @@ Sistema web para gestão dos times de Valorant da TLK (Karma, Alfa, Omega): cada
    DATABASE_URL="<url-do-banco-na-vercel>" npx prisma migrate deploy
    DATABASE_URL="<url-do-banco-na-vercel>" npx tsx prisma/seed.ts
    ```
-5. O `vercel.json` já configura o cron de atualização de elo (`/api/cron/refresh-elo`, a cada 6h) — a Vercel ativa automaticamente ao detectar o arquivo.
+5. O `vercel.json` já configura o cron de atualização de elo (`/api/cron/refresh-elo`, 1x por dia — limite do plano Hobby da Vercel; em um plano Pro dá pra rodar com mais frequência) — a Vercel ativa automaticamente ao detectar o arquivo.
 6. Quando a chave do Tracker.gg for aprovada, basta adicionar `TRACKER_API_KEY` nas env vars do projeto — nenhuma mudança de código é necessária.
 
 ## Estrutura
