@@ -2,6 +2,7 @@ import { requireRole } from "@/lib/session";
 import { db } from "@/lib/db";
 import { Card, Badge } from "@/components/ui/card";
 import { CreateTournamentForm } from "@/components/admin/create-tournament-form";
+import { RegisterTeamAdminForm } from "@/components/admin/register-team-admin-form";
 
 const STATUS_TONE: Record<string, "purple" | "pink" | "green" | "yellow" | "red" | "muted"> = {
   PLANNED: "muted",
@@ -14,10 +15,13 @@ const STATUS_TONE: Record<string, "purple" | "pink" | "green" | "yellow" | "red"
 export default async function AdminTournamentsPage() {
   await requireRole("ADMIN");
 
-  const tournaments = await db.tournament.findMany({
-    include: { registrations: { include: { team: true } } },
-    orderBy: { startDate: "asc" },
-  });
+  const [tournaments, teams] = await Promise.all([
+    db.tournament.findMany({
+      include: { registrations: { include: { team: true } } },
+      orderBy: { startDate: "asc" },
+    }),
+    db.team.findMany({ orderBy: { name: "asc" } }),
+  ]);
 
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
@@ -49,11 +53,26 @@ export default async function AdminTournamentsPage() {
           </div>
         )}
       </div>
-      <div>
-        <h2 className="mb-6 text-xl font-semibold">Novo campeonato</h2>
-        <Card>
-          <CreateTournamentForm />
-        </Card>
+      <div className="space-y-6">
+        <div>
+          <h2 className="mb-6 text-xl font-semibold">Novo campeonato</h2>
+          <Card>
+            <CreateTournamentForm />
+          </Card>
+        </div>
+        <div>
+          <h2 className="mb-6 text-xl font-semibold">Inscrever time</h2>
+          <Card>
+            <RegisterTeamAdminForm
+              teams={teams}
+              tournaments={tournaments.map((t) => ({
+                id: t.id,
+                name: t.name,
+                startDate: t.startDate.toISOString(),
+              }))}
+            />
+          </Card>
+        </div>
       </div>
     </div>
   );
