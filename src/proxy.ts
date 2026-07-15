@@ -1,8 +1,19 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { homeForRole } from "@/lib/session";
+import { db } from "@/lib/db";
 
-export default auth((req) => {
+const SESSION_COOKIE_NAMES = ["authjs.session-token", "__Secure-authjs.session-token"];
+
+function redirectToLoginAndClearSession(url: string) {
+  const response = NextResponse.redirect(new URL("/login", url));
+  for (const name of SESSION_COOKIE_NAMES) {
+    response.cookies.delete(name);
+  }
+  return response;
+}
+
+export default auth(async (req) => {
   const { pathname } = req.nextUrl;
   const session = req.auth;
 
@@ -13,6 +24,16 @@ export default auth((req) => {
 
   if (!session && !isAuthRoute) {
     return NextResponse.redirect(new URL("/login", req.url));
+  }
+
+  if (session?.user?.id) {
+    const stillExists = await db.user.findUnique({
+      where: { id: session.user.id },
+      select: { id: true },
+    });
+    if (!stillExists) {
+      return redirectToLoginAndClearSession(req.url);
+    }
   }
 
   if (session && pathname === "/login") {
