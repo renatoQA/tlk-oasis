@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { z } from "zod";
 import { db } from "@/lib/db";
 import { requireSession, requireRole } from "@/lib/session";
@@ -54,4 +55,17 @@ export async function updateUserRoleTeamAction(
   revalidatePath("/admin/users");
   revalidatePath(`/admin/users/${userId}`);
   return { ok: true, message: "Usuário atualizado" };
+}
+
+export async function deleteUserAction(userId: string): Promise<void> {
+  const session = await requireRole("ADMIN");
+
+  if (userId === session.user.id) {
+    throw new Error("Você não pode excluir a própria conta");
+  }
+
+  await db.user.delete({ where: { id: userId } });
+
+  revalidatePath("/admin/users");
+  redirect("/admin/users");
 }

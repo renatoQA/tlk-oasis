@@ -10,6 +10,7 @@ import { TeamTab } from "@/components/profile/team-tab";
 import { TournamentsTab } from "@/components/profile/tournaments-tab";
 import { DocumentsTab } from "@/components/profile/documents-tab";
 import { StatusToggles } from "@/components/admin/status-toggles";
+import { DeleteUserButton } from "@/components/admin/delete-user-button";
 
 export default async function AdminUserDetailPage({
   params,
@@ -17,7 +18,7 @@ export default async function AdminUserDetailPage({
   params: Promise<{ userId: string }>;
 }) {
   const { userId } = await params;
-  await requireRole("ADMIN");
+  const session = await requireRole("ADMIN");
 
   // Fetched sequentially (not Promise.all) - the local dev Postgres has a
   // narrow concurrency bug with @prisma/adapter-pg where many overlapping
@@ -35,9 +36,14 @@ export default async function AdminUserDetailPage({
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-xl font-semibold">{user.name ?? user.email}</h1>
-        <p className="text-sm text-muted">{user.email}</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-xl font-semibold">{user.name ?? user.email}</h1>
+          <p className="text-sm text-muted">{user.email}</p>
+        </div>
+        {session.user.id !== user.id && (
+          <DeleteUserButton userId={user.id} name={user.name ?? user.email} />
+        )}
       </div>
 
       <Card>

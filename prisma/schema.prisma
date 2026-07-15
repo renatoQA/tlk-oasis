@@ -115,8 +115,8 @@ model Document {
   userId String
   user   User   @relation("DocumentOwner", fields: [userId], references: [id], onDelete: Cascade)
 
-  uploadedById String
-  uploadedBy   User   @relation("DocumentUploadedBy", fields: [uploadedById], references: [id])
+  uploadedById String?
+  uploadedBy   User?  @relation("DocumentUploadedBy", fields: [uploadedById], references: [id], onDelete: SetNull)
 
   createdAt DateTime @default(now())
 
@@ -134,8 +134,8 @@ model Invite {
   createdAt  DateTime     @default(now())
   acceptedAt DateTime?
 
-  createdById String
-  createdBy   User   @relation("InviteCreatedBy", fields: [createdById], references: [id])
+  createdById String?
+  createdBy   User?   @relation("InviteCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
 
   @@index([email])
   @@index([status])
@@ -194,8 +194,8 @@ model Event {
   tournamentId String?
   tournament   Tournament? @relation(fields: [tournamentId], references: [id])
 
-  createdById String
-  createdBy   User   @relation("EventCreatedBy", fields: [createdById], references: [id])
+  createdById String?
+  createdBy   User?   @relation("EventCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
