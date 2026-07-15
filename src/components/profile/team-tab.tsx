@@ -18,7 +18,15 @@ export async function TeamTab({ userId }: { userId: string }) {
 
   return (
     <Card>
-      <div className="mb-4 flex items-center gap-2">
+      <div className="mb-4 flex items-center gap-3">
+        {user.team.logoUrl && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={user.team.logoUrl}
+            alt={user.team.name}
+            className="h-12 w-12 rounded-lg border border-border object-cover"
+          />
+        )}
         <h3 className="text-base font-semibold">{user.team.name}</h3>
         <Badge tone="purple">{user.team.members.length} jogadores</Badge>
       </div>
@@ -26,7 +34,11 @@ export async function TeamTab({ userId }: { userId: string }) {
         {user.team.members.map((member) => (
           <li key={member.id} className="flex items-center justify-between">
             <span>{member.name ?? member.email}</span>
-            {member.id === userId && <Badge tone="pink">você</Badge>}
+            <div className="flex gap-1.5">
+              {member.isCaptain && <Badge tone="pink">Capitão</Badge>}
+              {member.isIgl && <Badge tone="purple">IGL</Badge>}
+              {member.id === userId && <Badge tone="muted">você</Badge>}
+            </div>
           </li>
         ))}
       </ul>

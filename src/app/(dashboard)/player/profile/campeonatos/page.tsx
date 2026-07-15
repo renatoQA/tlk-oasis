@@ -8,7 +8,7 @@ export default async function PlayerTournamentsPage() {
   return (
     <div>
       <ProfileTabNav basePath="/player/profile" active="tournaments" />
-      <TournamentsTab userId={session.user.id} />
+      <TournamentsTab userId={session.user.id} basePath="/player/profile/campeonatos" />
     </div>
   );
 }

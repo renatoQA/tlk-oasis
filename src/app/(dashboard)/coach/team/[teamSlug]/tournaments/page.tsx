@@ -48,18 +48,20 @@ export default async function CoachTeamTournamentsPage({
       ) : (
         <div className="space-y-3">
           {registrations.map((reg) => (
-            <Card key={reg.id}>
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium">{reg.tournament.name}</p>
-                  <p className="text-xs text-muted">
-                    {reg.tournament.startDate.toLocaleDateString("pt-BR")}
-                    {reg.tournament.endDate && ` – ${reg.tournament.endDate.toLocaleDateString("pt-BR")}`}
-                  </p>
+            <Link key={reg.id} href={`/coach/team/${team.slug}/tournaments/${reg.tournament.id}`}>
+              <Card className="card-hover-effect">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium">{reg.tournament.name}</p>
+                    <p className="text-xs text-muted">
+                      {reg.tournament.startDate.toLocaleDateString("pt-BR")}
+                      {reg.tournament.endDate && ` – ${reg.tournament.endDate.toLocaleDateString("pt-BR")}`}
+                    </p>
+                  </div>
+                  <Badge tone={STATUS_TONE[reg.status]}>{reg.status}</Badge>
                 </div>
-                <Badge tone={STATUS_TONE[reg.status]}>{reg.status}</Badge>
-              </div>
-            </Card>
+              </Card>
+            </Link>
           ))}
         </div>
       )}

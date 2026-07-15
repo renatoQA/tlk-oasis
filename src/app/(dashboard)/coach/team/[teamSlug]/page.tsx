@@ -3,7 +3,9 @@ import { notFound, redirect } from "next/navigation";
 import { requireRole, homeForRole } from "@/lib/session";
 import { canManageTeam } from "@/lib/permissions";
 import { db } from "@/lib/db";
-import { Card, Badge } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
+import { TeamLogoUploader } from "@/components/admin/team-logo-uploader";
+import { RosterList } from "@/components/roster/roster-list";
 
 export default async function CoachTeamPage({ params }: { params: Promise<{ teamSlug: string }> }) {
   const { teamSlug } = await params;
@@ -19,8 +21,14 @@ export default async function CoachTeamPage({ params }: { params: Promise<{ team
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-xl font-semibold">{team.name}</h1>
-        <div className="flex gap-2 text-sm">
+        <div className="flex items-center gap-3">
+          {team.logoUrl && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={team.logoUrl} alt={team.name} className="h-12 w-12 rounded-lg border border-border object-cover" />
+          )}
+          <h1 className="text-xl font-semibold">{team.name}</h1>
+        </div>
+        <div className="flex items-center gap-4 text-sm">
           <Link href={`/coach/team/${team.slug}/agenda`} className="text-brand-pink-light hover:underline">
             Agenda
           </Link>
@@ -30,38 +38,13 @@ export default async function CoachTeamPage({ params }: { params: Promise<{ team
         </div>
       </div>
 
+      <Card className="mb-6">
+        <TeamLogoUploader teamId={team.id} currentUrl={team.logoUrl} />
+      </Card>
+
       <Card>
         <h2 className="mb-4 text-base font-semibold">Elenco</h2>
-        {team.members.length === 0 ? (
-          <p className="text-sm text-muted">Nenhum jogador neste time ainda.</p>
-        ) : (
-          <ul className="space-y-2">
-            {team.members.map((player) => (
-              <li key={player.id} className="flex items-center justify-between border-b border-border pb-2 last:border-0">
-                <Link
-                  href={`/coach/team/${team.slug}/players/${player.id}`}
-                  className="hover:text-brand-pink-light"
-                >
-                  {player.name ?? player.email}
-                </Link>
-                <div className="flex items-center gap-2 text-xs text-muted">
-                  {player.riotAccount ? (
-                    <>
-                      <Badge tone="muted">
-                        {player.riotAccount.cachedCurrentTier ?? "sem elo"}
-                      </Badge>
-                      {player.riotAccount.cachedPeakTier && (
-                        <Badge tone="pink">peak {player.riotAccount.cachedPeakTier}</Badge>
-                      )}
-                    </>
-                  ) : (
-                    <Badge tone="muted">sem riot id</Badge>
-                  )}
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
+        <RosterList players={team.members} detailBasePath={`/coach/team/${team.slug}/players`} />
       </Card>
     </div>
   );

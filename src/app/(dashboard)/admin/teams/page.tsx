@@ -17,7 +17,7 @@ export default async function AdminTeamsPage() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {teams.map((team) => (
           <Link key={team.id} href={`/admin/teams/${team.slug}`}>
-            <Card className="transition hover:border-brand-pink/50">
+            <Card className="card-hover-effect">
               <h2 className="font-semibold">{team.name}</h2>
               <div className="mt-2 flex gap-2">
                 <Badge tone="purple">{team.members.length} jogadores</Badge>

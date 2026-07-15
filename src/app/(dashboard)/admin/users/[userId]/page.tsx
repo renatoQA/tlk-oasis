@@ -39,7 +39,7 @@ export default async function AdminUserDetailPage({
       <RiotIdTab userId={user.id} editable={false} />
       <EloTab userId={user.id} editable />
       <TeamTab userId={user.id} />
-      <TournamentsTab userId={user.id} />
+      <TournamentsTab userId={user.id} basePath="/admin/tournaments" />
     </div>
   );
 }

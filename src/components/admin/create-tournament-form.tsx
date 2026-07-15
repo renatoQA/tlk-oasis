@@ -1,12 +1,16 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { Input, Label } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { ImageUploadButton } from "@/components/ui/image-upload-button";
+import { RichTextEditor } from "@/components/editor/rich-text-editor";
 import { createTournamentAction } from "@/actions/tournament-actions";
 
 export function CreateTournamentForm() {
   const [state, formAction, pending] = useActionState(createTournamentAction, null);
+  const [imageUrl, setImageUrl] = useState("");
+  const [description, setDescription] = useState("");
 
   return (
     <form action={formAction} className="space-y-4">
@@ -40,15 +44,19 @@ export function CreateTournamentForm() {
           <Input id="endDate" name="endDate" type="date" />
         </div>
       </div>
+
       <div>
-        <Label htmlFor="description">Descrição</Label>
-        <textarea
-          id="description"
-          name="description"
-          rows={3}
-          className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm"
-        />
+        <Label>Imagem/logo do campeonato</Label>
+        <input type="hidden" name="imageUrl" value={imageUrl} />
+        <ImageUploadButton label="Enviar imagem" currentUrl={imageUrl || null} onUploaded={setImageUrl} />
       </div>
+
+      <div>
+        <Label>Descrição</Label>
+        <input type="hidden" name="description" value={description} />
+        <RichTextEditor value={description} onChange={setDescription} placeholder="Regras, premiação, links..." />
+      </div>
+
       <Button type="submit" disabled={pending} className="w-full">
         {pending ? "Criando..." : "Criar campeonato"}
       </Button>

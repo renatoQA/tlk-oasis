@@ -41,6 +41,7 @@ Sistema web para gestão dos times de Valorant da TLK (Karma, Alfa, Omega): cada
 | `NEXTAUTH_URL` | URL pública do deploy (ex: `https://tlk.vercel.app`). |
 | `CRON_SECRET` | String aleatória; a Vercel envia automaticamente como header `Authorization: Bearer <CRON_SECRET>` nas chamadas de cron. |
 | `TRACKER_API_KEY` | Opcional. Chave da API oficial do Tracker.gg (developer.tracker.gg). Enquanto não configurada, o sistema usa entrada manual de elo (funciona normalmente, só não busca automático). |
+| `BLOB_READ_WRITE_TOKEN` | Necessária para upload de imagens (logo do time, banner de campeonato, imagens na descrição). Crie um Blob Store na aba **Storage** da Vercel (mesmo fluxo do Postgres) — a variável é injetada automaticamente. Sem ela, os botões de upload mostram um erro amigável e o resto do sistema funciona normalmente. |
 
 ## Deploy na Vercel
 

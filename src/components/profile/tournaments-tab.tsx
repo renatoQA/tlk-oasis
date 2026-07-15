@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { db } from "@/lib/db";
 import { Card, Badge } from "@/components/ui/card";
 
@@ -9,7 +10,7 @@ const STATUS_TONE: Record<string, "purple" | "pink" | "green" | "yellow" | "red"
   WITHDRAWN: "red",
 };
 
-export async function TournamentsTab({ userId }: { userId: string }) {
+export async function TournamentsTab({ userId, basePath }: { userId: string; basePath: string }) {
   const user = await db.user.findUnique({ where: { id: userId } });
   if (!user?.teamId) {
     return (
@@ -35,13 +36,13 @@ export async function TournamentsTab({ userId }: { userId: string }) {
         <ul className="space-y-3">
           {registrations.map((reg) => (
             <li key={reg.id} className="flex items-center justify-between border-b border-border pb-3 last:border-0">
-              <div>
+              <Link href={`${basePath}/${reg.tournament.id}`} className="hover:text-brand-pink-light">
                 <p className="font-medium">{reg.tournament.name}</p>
                 <p className="text-xs text-muted">
                   {reg.tournament.startDate.toLocaleDateString("pt-BR")}
                   {reg.tournament.endDate && ` – ${reg.tournament.endDate.toLocaleDateString("pt-BR")}`}
                 </p>
-              </div>
+              </Link>
               <Badge tone={STATUS_TONE[reg.status]}>{reg.status}</Badge>
             </li>
           ))}

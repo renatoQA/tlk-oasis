@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { requireRole } from "@/lib/session";
 import { db } from "@/lib/db";
 import { Card, Badge } from "@/components/ui/card";
@@ -34,21 +35,23 @@ export default async function AdminTournamentsPage() {
         ) : (
           <div className="space-y-3">
             {tournaments.map((t) => (
-              <Card key={t.id}>
-                <p className="font-medium">{t.name}</p>
-                <p className="text-xs text-muted">
-                  {t.startDate.toLocaleDateString("pt-BR")}
-                  {t.endDate && ` – ${t.endDate.toLocaleDateString("pt-BR")}`}
-                  {t.organizer && ` · ${t.organizer}`}
-                </p>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {t.registrations.map((reg) => (
-                    <Badge key={reg.id} tone={STATUS_TONE[reg.status]}>
-                      {reg.team.name}: {reg.status}
-                    </Badge>
-                  ))}
-                </div>
-              </Card>
+              <Link key={t.id} href={`/admin/tournaments/${t.id}`}>
+                <Card className="card-hover-effect">
+                  <p className="font-medium">{t.name}</p>
+                  <p className="text-xs text-muted">
+                    {t.startDate.toLocaleDateString("pt-BR")}
+                    {t.endDate && ` – ${t.endDate.toLocaleDateString("pt-BR")}`}
+                    {t.organizer && ` · ${t.organizer}`}
+                  </p>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {t.registrations.map((reg) => (
+                      <Badge key={reg.id} tone={STATUS_TONE[reg.status]}>
+                        {reg.team.name}: {reg.status}
+                      </Badge>
+                    ))}
+                  </div>
+                </Card>
+              </Link>
             ))}
           </div>
         )}

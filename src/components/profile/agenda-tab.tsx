@@ -17,8 +17,10 @@ const STATUS_TONE: Record<string, "purple" | "pink" | "green" | "yellow" | "red"
 };
 
 export async function AgendaTab({ userId, canRespond }: { userId: string; canRespond: boolean }) {
+  // eslint-disable-next-line react-hooks/purity -- server component data fetch, not a memoized render
+  const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
   const invites = await db.eventInvite.findMany({
-    where: { userId, event: { startsAt: { gte: new Date(Date.now() - 24 * 60 * 60 * 1000) } } },
+    where: { userId, event: { startsAt: { gte: since } } },
     include: { event: true },
     orderBy: { event: { startsAt: "asc" } },
   });

@@ -48,6 +48,7 @@ model Team {
   id        String   @id @default(cuid())
   name      String   @unique
   slug      String   @unique
+  logoUrl   String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -74,6 +75,8 @@ model User {
   email        String    @unique
   passwordHash String?
   role         Role      @default(PLAYER)
+  isIgl        Boolean   @default(false)
+  isCaptain    Boolean   @default(false)
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 
@@ -168,6 +171,7 @@ model Event {
 
   invites EventInvite[]
 
+  @@unique([teamId, tournamentId, type])
   @@index([teamId, startsAt])
 }
 
@@ -191,7 +195,8 @@ model Tournament {
   organizer   String?
   startDate   DateTime
   endDate     DateTime?
-  description String?
+  description String? // sanitized HTML from the rich text editor
+  imageUrl    String?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 

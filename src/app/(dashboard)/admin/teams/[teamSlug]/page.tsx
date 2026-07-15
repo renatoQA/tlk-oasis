@@ -1,9 +1,11 @@
 import { notFound } from "next/navigation";
 import { requireRole } from "@/lib/session";
 import { db } from "@/lib/db";
-import { Card, Badge } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { AssignCoachForm } from "@/components/admin/assign-coach-form";
+import { TeamLogoUploader } from "@/components/admin/team-logo-uploader";
+import { RosterList } from "@/components/roster/roster-list";
 import { removeCoachAction } from "@/actions/team-actions";
 
 export default async function AdminTeamDetailPage({
@@ -16,7 +18,7 @@ export default async function AdminTeamDetailPage({
 
   const team = await db.team.findUnique({
     where: { slug: teamSlug },
-    include: { members: true, coachLinks: { include: { user: true } } },
+    include: { members: { include: { riotAccount: true } }, coachLinks: { include: { user: true } } },
   });
   if (!team) notFound();
 
@@ -26,7 +28,18 @@ export default async function AdminTeamDetailPage({
 
   return (
     <div className="space-y-6">
-      <h1 className="text-xl font-semibold">{team.name}</h1>
+      <div className="flex items-center gap-3">
+        {team.logoUrl && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={team.logoUrl} alt={team.name} className="h-12 w-12 rounded-lg border border-border object-cover" />
+        )}
+        <h1 className="text-xl font-semibold">{team.name}</h1>
+      </div>
+
+      <Card>
+        <h2 className="mb-3 text-sm font-semibold">Logo do time</h2>
+        <TeamLogoUploader teamId={team.id} currentUrl={team.logoUrl} />
+      </Card>
 
       <Card>
         <h2 className="mb-3 text-sm font-semibold">Coaches</h2>
@@ -50,16 +63,8 @@ export default async function AdminTeamDetailPage({
       </Card>
 
       <Card>
-        <div className="mb-3 flex items-center gap-2">
-          <h2 className="text-sm font-semibold">Elenco</h2>
-          <Badge tone="purple">{team.members.length}</Badge>
-        </div>
-        <ul className="space-y-1.5 text-sm">
-          {team.members.map((member) => (
-            <li key={member.id}>{member.name ?? member.email}</li>
-          ))}
-          {team.members.length === 0 && <p className="text-muted">Nenhum jogador ainda.</p>}
-        </ul>
+        <h2 className="mb-4 text-sm font-semibold">Elenco</h2>
+        <RosterList players={team.members} detailBasePath="/admin/users" />
       </Card>
     </div>
   );

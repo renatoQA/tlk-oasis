@@ -5,6 +5,7 @@ import { db } from "@/lib/db";
 import { requireRole } from "@/lib/session";
 import { canManageTeam } from "@/lib/permissions";
 import { createTournamentSchema, registerTeamSchema } from "@/lib/validators/tournament";
+import { sanitizeRichText } from "@/lib/sanitize";
 import type { ActionResult } from "./invite-actions";
 
 export async function createTournamentAction(
@@ -19,12 +20,13 @@ export async function createTournamentAction(
     startDate: formData.get("startDate"),
     endDate: formData.get("endDate") || undefined,
     description: formData.get("description") || undefined,
+    imageUrl: formData.get("imageUrl") || undefined,
   });
   if (!parsed.success) {
     return { ok: false, error: parsed.error.issues[0]?.message ?? "Dados inválidos" };
   }
 
-  const { name, organizer, startDate, endDate, description } = parsed.data;
+  const { name, organizer, startDate, endDate, description, imageUrl } = parsed.data;
 
   await db.tournament.create({
     data: {
@@ -32,7 +34,8 @@ export async function createTournamentAction(
       organizer,
       startDate: new Date(startDate),
       endDate: endDate ? new Date(endDate) : null,
-      description,
+      description: description ? sanitizeRichText(description) : null,
+      imageUrl,
     },
   });
 
@@ -61,13 +64,51 @@ export async function registerTeamAction(
     return { ok: false, error: "Sem permissão para este time" };
   }
 
-  await db.teamTournamentRegistration.upsert({
-    where: { teamId_tournamentId: { teamId, tournamentId } },
-    update: { notes, status: "REGISTERED" },
-    create: { teamId, tournamentId, notes, status: "REGISTERED" },
+  await db.$transaction(async (tx) => {
+    await tx.teamTournamentRegistration.upsert({
+      where: { teamId_tournamentId: { teamId, tournamentId } },
+      update: { notes, status: "REGISTERED" },
+      create: { teamId, tournamentId, notes, status: "REGISTERED" },
+    });
+
+    const existingEvent = await tx.event.findFirst({
+      where: { teamId, tournamentId, type: "TOURNAMENT_MATCH" },
+      select: { id: true },
+    });
+
+    if (!existingEvent) {
+      const tournament = await tx.tournament.findUniqueOrThrow({
+        where: { id: tournamentId },
+        select: { name: true, startDate: true },
+      });
+
+      const event = await tx.event.create({
+        data: {
+          type: "TOURNAMENT_MATCH",
+          title: tournament.name,
+          startsAt: tournament.startDate,
+          teamId,
+          tournamentId,
+          createdById: session.user.id,
+        },
+      });
+
+      const players = await tx.user.findMany({
+        where: { teamId, role: "PLAYER" },
+        select: { id: true },
+      });
+
+      if (players.length > 0) {
+        await tx.eventInvite.createMany({
+          data: players.map((p) => ({ eventId: event.id, userId: p.id })),
+          skipDuplicates: true,
+        });
+      }
+    }
   });
 
   revalidatePath(`/coach/team`);
   revalidatePath("/admin/tournaments");
-  return { ok: true, message: "Time inscrito no campeonato" };
+  revalidatePath("/player/profile");
+  return { ok: true, message: "Time inscrito no campeonato — a data já entrou na agenda dos jogadores" };
 }
