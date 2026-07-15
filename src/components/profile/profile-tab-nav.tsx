@@ -1,20 +1,31 @@
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
-export type ProfileTab = "agenda" | "riot-id" | "elo" | "team" | "tournaments";
+export type ProfileTab = "profile" | "agenda" | "elo" | "team" | "tournaments" | "documents";
 
 const TABS: { key: ProfileTab; label: string; slug: string }[] = [
-  { key: "agenda", label: "Agenda", slug: "" },
-  { key: "riot-id", label: "Riot ID", slug: "riot-id" },
+  { key: "profile", label: "Perfil", slug: "" },
+  { key: "agenda", label: "Agenda", slug: "agenda" },
   { key: "elo", label: "Elo", slug: "elo" },
   { key: "team", label: "Time", slug: "time" },
   { key: "tournaments", label: "Campeonatos", slug: "campeonatos" },
+  { key: "documents", label: "Documentos", slug: "documentos" },
 ];
 
-export function ProfileTabNav({ basePath, active }: { basePath: string; active: ProfileTab }) {
+export function ProfileTabNav({
+  basePath,
+  active,
+  visibleTabs,
+}: {
+  basePath: string;
+  active: ProfileTab;
+  visibleTabs?: ProfileTab[];
+}) {
+  const tabs = visibleTabs ? TABS.filter((t) => visibleTabs.includes(t.key)) : TABS;
+
   return (
     <div className="mb-6 flex gap-1 overflow-x-auto border-b border-border">
-      {TABS.map((tab) => (
+      {tabs.map((tab) => (
         <Link
           key={tab.key}
           href={tab.slug ? `${basePath}/${tab.slug}` : basePath}

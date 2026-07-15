@@ -80,16 +80,47 @@ model User {
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 
+  photoUrl   String?
+  nick       String?
+  instagram  String?
+  address    String?
+  birthDate  DateTime?
+  shirtSize  String?
+
+  contractSent    Boolean @default(false)
+  contractSigned  Boolean @default(false)
+  shirtRequested  Boolean @default(false)
+  shirtSent       Boolean @default(false)
+  shirtReceived   Boolean @default(false)
+
   teamId String?
   team   Team?   @relation("TeamMembers", fields: [teamId], references: [id])
 
   coachAssignments CoachAssignment[]
   coachTeams       Team[]            @relation("TeamCoaches")
 
-  riotAccount   RiotAccount?
-  invitesSent   Invite[]      @relation("InviteCreatedBy")
-  eventInvites  EventInvite[]
-  createdEvents Event[]       @relation("EventCreatedBy")
+  riotAccount       RiotAccount?
+  invitesSent       Invite[]      @relation("InviteCreatedBy")
+  eventInvites      EventInvite[]
+  createdEvents     Event[]       @relation("EventCreatedBy")
+  documents         Document[]    @relation("DocumentOwner")
+  uploadedDocuments Document[]    @relation("DocumentUploadedBy")
+}
+
+model Document {
+  id    String @id @default(cuid())
+  title String
+  url   String
+
+  userId String
+  user   User   @relation("DocumentOwner", fields: [userId], references: [id], onDelete: Cascade)
+
+  uploadedById String
+  uploadedBy   User   @relation("DocumentUploadedBy", fields: [uploadedById], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
 }
 
 model Invite {

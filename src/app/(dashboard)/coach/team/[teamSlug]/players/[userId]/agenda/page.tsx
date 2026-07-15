@@ -2,10 +2,9 @@ import { notFound } from "next/navigation";
 import { requireRole } from "@/lib/session";
 import { getManagedTeamPlayer } from "@/lib/permissions";
 import { ProfileTabNav } from "@/components/profile/profile-tab-nav";
-import { ProfileInfoTab } from "@/components/profile/profile-info-tab";
-import { StatusView } from "@/components/profile/status-view";
+import { AgendaTab } from "@/components/profile/agenda-tab";
 
-export default async function CoachPlayerProfilePage({
+export default async function CoachPlayerAgendaPage({
   params,
 }: {
   params: Promise<{ teamSlug: string; userId: string }>;
@@ -18,11 +17,8 @@ export default async function CoachPlayerProfilePage({
   const basePath = `/coach/team/${teamSlug}/players/${userId}`;
   return (
     <div>
-      <ProfileTabNav basePath={basePath} active="profile" />
-      <div className="space-y-4">
-        <ProfileInfoTab userId={userId} editable={false} />
-        <StatusView user={found.player} canMarkReceived />
-      </div>
+      <ProfileTabNav basePath={basePath} active="agenda" />
+      <AgendaTab userId={userId} canRespond={false} />
     </div>
   );
 }

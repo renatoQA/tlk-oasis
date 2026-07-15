@@ -20,6 +20,7 @@ const NAV_BY_ROLE: Record<Role, NavItem[]> = {
     { href: "/admin/teams", label: "Times" },
     { href: "/admin/events", label: "Calendário" },
     { href: "/admin/tournaments", label: "Campeonatos" },
+    { href: "/admin/import", label: "Importar planilha" },
   ],
 };
 

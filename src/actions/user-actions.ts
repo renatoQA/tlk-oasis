@@ -31,7 +31,9 @@ export async function updateRiotIdAction(formData: FormData): Promise<void> {
     create: { userId: session.user.id, gameName, tagLine },
   });
 
-  revalidatePath("/player/profile/riot-id");
+  revalidatePath("/player/profile");
+  revalidatePath("/coach/team");
+  revalidatePath("/admin/users");
 }
 
 export async function updateUserRoleTeamAction(

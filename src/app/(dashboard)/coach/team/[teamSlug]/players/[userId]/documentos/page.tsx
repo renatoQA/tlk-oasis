@@ -2,9 +2,9 @@ import { notFound } from "next/navigation";
 import { requireRole } from "@/lib/session";
 import { getManagedTeamPlayer } from "@/lib/permissions";
 import { ProfileTabNav } from "@/components/profile/profile-tab-nav";
-import { RiotIdTab } from "@/components/profile/riot-id-tab";
+import { DocumentsTab } from "@/components/profile/documents-tab";
 
-export default async function CoachPlayerRiotIdPage({
+export default async function CoachPlayerDocumentsPage({
   params,
 }: {
   params: Promise<{ teamSlug: string; userId: string }>;
@@ -17,8 +17,8 @@ export default async function CoachPlayerRiotIdPage({
   const basePath = `/coach/team/${teamSlug}/players/${userId}`;
   return (
     <div>
-      <ProfileTabNav basePath={basePath} active="riot-id" />
-      <RiotIdTab userId={userId} editable={false} />
+      <ProfileTabNav basePath={basePath} active="documents" />
+      <DocumentsTab userId={userId} canUpload={false} />
     </div>
   );
 }
