@@ -4,12 +4,14 @@ import { useState } from "react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Avatar } from "@/components/ui/avatar";
 import { toggleMemberTagAction } from "@/actions/team-actions";
 
 export type RosterPlayer = {
   id: string;
   name: string | null;
   email: string;
+  photoUrl: string | null;
   isIgl: boolean;
   isCaptain: boolean;
   riotAccount: {
@@ -76,7 +78,11 @@ export function RosterList({
                 onChange={() => toggleSelected(player.id)}
                 className="accent-brand-pink"
               />
-              <Link href={`${detailBasePath}/${player.id}`} className="hover:text-brand-pink-light">
+              <Link
+                href={`${detailBasePath}/${player.id}`}
+                className="flex items-center gap-2 hover:text-brand-pink-light"
+              >
+                <Avatar src={player.photoUrl} name={player.name ?? player.email} size="sm" />
                 {player.name ?? player.email}
               </Link>
               {player.isCaptain && <Badge tone="pink">Capitão</Badge>}

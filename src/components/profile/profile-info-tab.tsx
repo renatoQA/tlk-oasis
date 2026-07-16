@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { ProfilePhotoUploader } from "@/components/profile/profile-photo-uploader";
 import { ProfileBioForm } from "@/components/profile/profile-bio-form";
 import { RiotIdTab } from "@/components/profile/riot-id-tab";
-import { blobProxyUrl } from "@/lib/blob-proxy";
+import { Avatar } from "@/components/ui/avatar";
 
 export async function ProfileInfoTab({ userId, editable }: { userId: string; editable: boolean }) {
   const user = await db.user.findUniqueOrThrow({ where: { id: userId } });
@@ -12,14 +12,7 @@ export async function ProfileInfoTab({ userId, editable }: { userId: string; edi
     <div className="space-y-4">
       <Card>
         <div className="mb-4 flex items-center gap-4">
-          {user.photoUrl && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={blobProxyUrl(user.photoUrl)}
-              alt={user.name ?? "Foto de perfil"}
-              className="h-16 w-16 rounded-full border border-border object-cover"
-            />
-          )}
+          <Avatar src={user.photoUrl} name={user.name ?? user.email} size="lg" />
           <div>
             <p className="font-semibold">{user.name ?? user.email}</p>
             <p className="text-xs text-muted">{user.email}</p>

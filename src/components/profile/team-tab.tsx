@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
 import { Card, Badge } from "@/components/ui/card";
-import { blobProxyUrl } from "@/lib/blob-proxy";
+import { Avatar, TeamLogo } from "@/components/ui/avatar";
 
 export async function TeamTab({ userId }: { userId: string }) {
   const user = await db.user.findUnique({
@@ -20,21 +20,17 @@ export async function TeamTab({ userId }: { userId: string }) {
   return (
     <Card>
       <div className="mb-4 flex items-center gap-3">
-        {user.team.logoUrl && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={blobProxyUrl(user.team.logoUrl)}
-            alt={user.team.name}
-            className="h-12 w-12 rounded-lg border border-border object-cover"
-          />
-        )}
+        <TeamLogo src={user.team.logoUrl} name={user.team.name} size="lg" />
         <h3 className="text-base font-semibold">{user.team.name}</h3>
         <Badge tone="purple">{user.team.members.length} jogadores</Badge>
       </div>
       <ul className="space-y-1.5 text-sm">
         {user.team.members.map((member) => (
           <li key={member.id} className="flex items-center justify-between">
-            <span>{member.name ?? member.email}</span>
+            <span className="flex items-center gap-2">
+              <Avatar src={member.photoUrl} name={member.name ?? member.email} size="sm" />
+              {member.name ?? member.email}
+            </span>
             <div className="flex gap-1.5">
               {member.isCaptain && <Badge tone="pink">Capitão</Badge>}
               {member.isIgl && <Badge tone="purple">IGL</Badge>}

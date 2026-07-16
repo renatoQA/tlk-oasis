@@ -2,6 +2,7 @@ import Link from "next/link";
 import { requireRole } from "@/lib/session";
 import { db } from "@/lib/db";
 import { Card, Badge } from "@/components/ui/card";
+import { TeamLogo } from "@/components/ui/avatar";
 
 export default async function AdminTeamsPage() {
   await requireRole("ADMIN");
@@ -18,7 +19,10 @@ export default async function AdminTeamsPage() {
         {teams.map((team) => (
           <Link key={team.id} href={`/admin/teams/${team.slug}`}>
             <Card className="card-hover-effect">
-              <h2 className="font-semibold">{team.name}</h2>
+              <div className="flex items-center gap-3">
+                <TeamLogo src={team.logoUrl} name={team.name} />
+                <h2 className="font-semibold">{team.name}</h2>
+              </div>
               <div className="mt-2 flex gap-2">
                 <Badge tone="purple">{team.members.length} jogadores</Badge>
                 <Badge tone="pink">{team.coachLinks.length} coaches</Badge>

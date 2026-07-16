@@ -7,7 +7,7 @@ import { AssignCoachForm } from "@/components/admin/assign-coach-form";
 import { TeamLogoUploader } from "@/components/admin/team-logo-uploader";
 import { RosterList } from "@/components/roster/roster-list";
 import { removeCoachAction } from "@/actions/team-actions";
-import { blobProxyUrl } from "@/lib/blob-proxy";
+import { Avatar, TeamLogo } from "@/components/ui/avatar";
 
 export default async function AdminTeamDetailPage({
   params,
@@ -30,10 +30,7 @@ export default async function AdminTeamDetailPage({
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
-        {team.logoUrl && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={blobProxyUrl(team.logoUrl)} alt={team.name} className="h-12 w-12 rounded-lg border border-border object-cover" />
-        )}
+        <TeamLogo src={team.logoUrl} name={team.name} size="lg" />
         <h1 className="text-xl font-semibold">{team.name}</h1>
       </div>
 
@@ -47,7 +44,10 @@ export default async function AdminTeamDetailPage({
         <ul className="mb-4 space-y-2">
           {team.coachLinks.map((link) => (
             <li key={link.id} className="flex items-center justify-between text-sm">
-              <span>{link.user.name ?? link.user.email}</span>
+              <span className="flex items-center gap-2">
+                <Avatar src={link.user.photoUrl} name={link.user.name ?? link.user.email} size="sm" />
+                {link.user.name ?? link.user.email}
+              </span>
               <form action={removeCoachAction.bind(null, link.id)}>
                 <Button type="submit" variant="ghost" className="text-xs text-red-300">
                   Remover

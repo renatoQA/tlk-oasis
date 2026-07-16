@@ -2,6 +2,7 @@ import Link from "next/link";
 import { requireRole } from "@/lib/session";
 import { db } from "@/lib/db";
 import { Card, Badge } from "@/components/ui/card";
+import { TeamLogo } from "@/components/ui/avatar";
 
 export default async function CoachHomePage() {
   const session = await requireRole("COACH", "ADMIN");
@@ -31,7 +32,10 @@ export default async function CoachHomePage() {
             <Link key={team.id} href={`/coach/team/${team.slug}`}>
               <Card className="card-hover-effect">
                 <div className="flex items-center justify-between">
-                  <h2 className="font-semibold">{team.name}</h2>
+                  <div className="flex items-center gap-3">
+                    <TeamLogo src={team.logoUrl} name={team.name} />
+                    <h2 className="font-semibold">{team.name}</h2>
+                  </div>
                   <Badge tone="purple">{team.members.length} jogadores</Badge>
                 </div>
               </Card>

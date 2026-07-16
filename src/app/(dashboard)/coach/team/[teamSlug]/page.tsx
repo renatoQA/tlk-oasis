@@ -6,7 +6,7 @@ import { db } from "@/lib/db";
 import { Card } from "@/components/ui/card";
 import { TeamLogoUploader } from "@/components/admin/team-logo-uploader";
 import { RosterList } from "@/components/roster/roster-list";
-import { blobProxyUrl } from "@/lib/blob-proxy";
+import { TeamLogo } from "@/components/ui/avatar";
 
 export default async function CoachTeamPage({ params }: { params: Promise<{ teamSlug: string }> }) {
   const { teamSlug } = await params;
@@ -23,10 +23,7 @@ export default async function CoachTeamPage({ params }: { params: Promise<{ team
     <div>
       <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          {team.logoUrl && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={blobProxyUrl(team.logoUrl)} alt={team.name} className="h-12 w-12 rounded-lg border border-border object-cover" />
-          )}
+          <TeamLogo src={team.logoUrl} name={team.name} size="lg" />
           <h1 className="text-xl font-semibold">{team.name}</h1>
         </div>
         <div className="flex items-center gap-4 text-sm">
