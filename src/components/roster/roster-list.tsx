@@ -23,9 +23,11 @@ export type RosterPlayer = {
 export function RosterList({
   players,
   detailBasePath,
+  meetingBasePath,
 }: {
   players: RosterPlayer[];
   detailBasePath: string;
+  meetingBasePath?: string;
 }) {
   const [selected, setSelected] = useState<Set<string>>(new Set());
 
@@ -101,6 +103,14 @@ export function RosterList({
                   {player.isIgl ? "− IGL" : "+ IGL"}
                 </button>
               </form>
+              {meetingBasePath && (
+                <Link
+                  href={`${meetingBasePath}?playerId=${player.id}&type=MEETING`}
+                  className="rounded px-1.5 py-0.5 text-brand-pink-light hover:bg-card-hover"
+                >
+                  Marcar reunião
+                </Link>
+              )}
             </div>
           </li>
         ))}

@@ -44,7 +44,11 @@ export default async function CoachTeamPage({ params }: { params: Promise<{ team
 
       <Card>
         <h2 className="mb-4 text-base font-semibold">Elenco</h2>
-        <RosterList players={team.members} detailBasePath={`/coach/team/${team.slug}/players`} />
+        <RosterList
+          players={team.members}
+          detailBasePath={`/coach/team/${team.slug}/players`}
+          meetingBasePath={`/coach/team/${team.slug}/agenda/new`}
+        />
       </Card>
     </div>
   );

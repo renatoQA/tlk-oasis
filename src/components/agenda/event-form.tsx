@@ -14,7 +14,17 @@ const TYPE_OPTIONS = [
   { value: "MEETING", label: "Reunião" },
 ];
 
-export function EventForm({ teamId, roster }: { teamId: string; roster: Player[] }) {
+export function EventForm({
+  teamId,
+  roster,
+  defaultType = "TRAINING",
+  preselectedPlayerIds = [],
+}: {
+  teamId: string;
+  roster: Player[];
+  defaultType?: string;
+  preselectedPlayerIds?: string[];
+}) {
   const [state, formAction, pending] = useActionState(createEventAction, null);
 
   return (
@@ -38,7 +48,7 @@ export function EventForm({ teamId, roster }: { teamId: string; roster: Player[]
           id="type"
           name="type"
           className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm"
-          defaultValue="TRAINING"
+          defaultValue={defaultType}
         >
           {TYPE_OPTIONS.map((opt) => (
             <option key={opt.value} value={opt.value}>
@@ -75,7 +85,12 @@ export function EventForm({ teamId, roster }: { teamId: string; roster: Player[]
         <div className="space-y-1 rounded-lg border border-border p-3">
           {roster.map((player) => (
             <label key={player.id} className="flex items-center gap-2 text-sm">
-              <input type="checkbox" name="playerIds" value={player.id} />
+              <input
+                type="checkbox"
+                name="playerIds"
+                value={player.id}
+                defaultChecked={preselectedPlayerIds.includes(player.id)}
+              />
               {player.name ?? player.email}
             </label>
           ))}
