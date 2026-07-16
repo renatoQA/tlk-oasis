@@ -33,7 +33,7 @@ export async function uploadDocumentAction(
 
   try {
     const ext = file.name.split(".").pop() ?? "bin";
-    const blob = await put(`documents/${crypto.randomUUID()}.${ext}`, file, { access: "public" });
+    const blob = await put(`documents/${crypto.randomUUID()}.${ext}`, file, { access: "private" });
 
     await db.document.create({
       data: { userId, title, url: blob.url, uploadedById: session.user.id },

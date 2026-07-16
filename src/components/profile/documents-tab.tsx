@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { DocumentUploadForm } from "@/components/profile/document-upload-form";
 import { deleteDocumentAction } from "@/actions/document-actions";
+import { blobProxyUrl } from "@/lib/blob-proxy";
 
 export async function DocumentsTab({ userId, canUpload }: { userId: string; canUpload: boolean }) {
   const documents = await db.document.findMany({
@@ -21,7 +22,7 @@ export async function DocumentsTab({ userId, canUpload }: { userId: string; canU
           {documents.map((doc) => (
             <li key={doc.id} className="flex items-center justify-between border-b border-border pb-2 last:border-0">
               <a
-                href={doc.url}
+                href={blobProxyUrl(doc.url)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-sm text-brand-pink-light hover:underline"

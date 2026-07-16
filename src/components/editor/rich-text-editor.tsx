@@ -6,6 +6,7 @@ import Image from "@tiptap/extension-image";
 import { useRef } from "react";
 import { cn } from "@/lib/utils";
 import { uploadImage } from "@/actions/upload-actions";
+import { blobProxyUrl } from "@/lib/blob-proxy";
 
 export function RichTextEditor({
   value,
@@ -42,7 +43,7 @@ export function RichTextEditor({
     formData.set("file", file);
     const result = await uploadImage(formData);
     if (result.ok) {
-      editor.chain().focus().setImage({ src: result.url }).run();
+      editor.chain().focus().setImage({ src: blobProxyUrl(result.url) }).run();
     }
   }
 

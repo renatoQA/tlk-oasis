@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { Card, Badge } from "@/components/ui/card";
+import { blobProxyUrl } from "@/lib/blob-proxy";
 
 export async function TeamTab({ userId }: { userId: string }) {
   const user = await db.user.findUnique({
@@ -22,7 +23,7 @@ export async function TeamTab({ userId }: { userId: string }) {
         {user.team.logoUrl && (
           // eslint-disable-next-line @next/next/no-img-element
           <img
-            src={user.team.logoUrl}
+            src={blobProxyUrl(user.team.logoUrl)}
             alt={user.team.name}
             className="h-12 w-12 rounded-lg border border-border object-cover"
           />

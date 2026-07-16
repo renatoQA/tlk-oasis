@@ -30,7 +30,7 @@ export async function uploadImage(formData: FormData): Promise<UploadResult> {
   try {
     const ext = file.name.split(".").pop() ?? "bin";
     const blob = await put(`uploads/${crypto.randomUUID()}.${ext}`, file, {
-      access: "public",
+      access: "private",
     });
     return { ok: true, url: blob.url };
   } catch (e) {

@@ -1,5 +1,6 @@
 import { Card, Badge } from "@/components/ui/card";
 import { RichTextViewer } from "@/components/editor/rich-text-viewer";
+import { blobProxyUrl } from "@/lib/blob-proxy";
 
 const STATUS_TONE: Record<string, "purple" | "pink" | "green" | "yellow" | "red" | "muted"> = {
   PLANNED: "muted",
@@ -28,7 +29,7 @@ export function TournamentDetail({
       {tournament.imageUrl && (
         // eslint-disable-next-line @next/next/no-img-element
         <img
-          src={tournament.imageUrl}
+          src={blobProxyUrl(tournament.imageUrl)}
           alt={tournament.name}
           className="mb-4 h-48 w-full rounded-lg border border-border object-cover"
         />

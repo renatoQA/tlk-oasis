@@ -3,6 +3,7 @@
 import { useActionState, useEffect, useRef } from "react";
 import { uploadImageAction } from "@/actions/upload-actions";
 import { Button } from "@/components/ui/button";
+import { blobProxyUrl } from "@/lib/blob-proxy";
 
 export function ImageUploadButton({
   label = "Enviar imagem",
@@ -30,7 +31,7 @@ export function ImageUploadButton({
       {preview && (
         // eslint-disable-next-line @next/next/no-img-element
         <img
-          src={preview}
+          src={blobProxyUrl(preview)}
           alt="Preview"
           className="h-14 w-14 rounded-lg border border-border object-cover"
         />
