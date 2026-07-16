@@ -17,7 +17,11 @@ export default async function CoachPlayerEloPage({
   const basePath = `/coach/team/${teamSlug}/players/${userId}`;
   return (
     <div>
-      <ProfileTabNav basePath={basePath} active="elo" />
+      <ProfileTabNav
+        basePath={basePath}
+        active="elo"
+        visibleTabs={["profile", "agenda", "elo", "team", "tournaments"]}
+      />
       <EloTab userId={userId} editable />
     </div>
   );

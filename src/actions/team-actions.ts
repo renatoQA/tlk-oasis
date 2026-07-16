@@ -91,11 +91,7 @@ export async function toggleMemberTagAction(
 }
 
 export async function setTeamLogoAction(teamId: string, logoUrl: string): Promise<void> {
-  const session = await requireSession();
-
-  if (!(await canManageTeam(session.user, teamId))) {
-    throw new Error("Sem permissão para este time");
-  }
+  await requireRole("ADMIN");
 
   await db.team.update({ where: { id: teamId }, data: { logoUrl } });
 

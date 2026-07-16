@@ -17,7 +17,11 @@ export default async function CoachPlayerAgendaPage({
   const basePath = `/coach/team/${teamSlug}/players/${userId}`;
   return (
     <div>
-      <ProfileTabNav basePath={basePath} active="agenda" />
+      <ProfileTabNav
+        basePath={basePath}
+        active="agenda"
+        visibleTabs={["profile", "agenda", "elo", "team", "tournaments"]}
+      />
       <AgendaTab userId={userId} canRespond={false} />
     </div>
   );

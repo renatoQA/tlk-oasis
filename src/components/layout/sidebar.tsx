@@ -7,11 +7,17 @@ import { cn } from "@/lib/utils";
 
 type NavItem = { href: string; label: string };
 
+const SHARED_NAV: NavItem[] = [
+  { href: "/vods", label: "VODs TLK" },
+  { href: "/tlk-play", label: "TLK Play" },
+];
+
 const NAV_BY_ROLE: Record<Role, NavItem[]> = {
-  PLAYER: [{ href: "/player/profile", label: "Meu Perfil" }],
+  PLAYER: [{ href: "/player/profile", label: "Meu Perfil" }, ...SHARED_NAV],
   COACH: [
     { href: "/coach", label: "Meus Times" },
     { href: "/coach/profile", label: "Meu Perfil" },
+    ...SHARED_NAV,
   ],
   ADMIN: [
     { href: "/admin", label: "Dashboard" },
@@ -21,6 +27,7 @@ const NAV_BY_ROLE: Record<Role, NavItem[]> = {
     { href: "/admin/events", label: "Calendário" },
     { href: "/admin/tournaments", label: "Campeonatos" },
     { href: "/admin/import", label: "Importar planilha" },
+    ...SHARED_NAV,
   ],
 };
 

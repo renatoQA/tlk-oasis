@@ -19,7 +19,11 @@ export default async function CoachPlayerProfilePage({
   const basePath = `/coach/team/${teamSlug}/players/${userId}`;
   return (
     <div>
-      <ProfileTabNav basePath={basePath} active="profile" />
+      <ProfileTabNav
+        basePath={basePath}
+        active="profile"
+        visibleTabs={["profile", "agenda", "elo", "team", "tournaments"]}
+      />
       <div className="space-y-4">
         <div className="flex justify-end">
           <Link href={`/coach/team/${teamSlug}/agenda/new?playerId=${userId}&type=MEETING`}>

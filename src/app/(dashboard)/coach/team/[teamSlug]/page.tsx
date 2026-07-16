@@ -4,7 +4,6 @@ import { requireRole, homeForRole } from "@/lib/session";
 import { canManageTeam } from "@/lib/permissions";
 import { db } from "@/lib/db";
 import { Card } from "@/components/ui/card";
-import { TeamLogoUploader } from "@/components/admin/team-logo-uploader";
 import { RosterList } from "@/components/roster/roster-list";
 import { TeamLogo } from "@/components/ui/avatar";
 
@@ -35,10 +34,6 @@ export default async function CoachTeamPage({ params }: { params: Promise<{ team
           </Link>
         </div>
       </div>
-
-      <Card className="mb-6">
-        <TeamLogoUploader teamId={team.id} currentUrl={team.logoUrl} />
-      </Card>
 
       <Card>
         <h2 className="mb-4 text-base font-semibold">Elenco</h2>

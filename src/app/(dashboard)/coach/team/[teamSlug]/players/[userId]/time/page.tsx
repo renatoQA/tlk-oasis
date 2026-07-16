@@ -17,7 +17,11 @@ export default async function CoachPlayerTeamPage({
   const basePath = `/coach/team/${teamSlug}/players/${userId}`;
   return (
     <div>
-      <ProfileTabNav basePath={basePath} active="team" />
+      <ProfileTabNav
+        basePath={basePath}
+        active="team"
+        visibleTabs={["profile", "agenda", "elo", "team", "tournaments"]}
+      />
       <TeamTab userId={userId} />
     </div>
   );

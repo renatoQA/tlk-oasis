@@ -17,7 +17,11 @@ export default async function CoachPlayerTournamentsPage({
   const basePath = `/coach/team/${teamSlug}/players/${userId}`;
   return (
     <div>
-      <ProfileTabNav basePath={basePath} active="tournaments" />
+      <ProfileTabNav
+        basePath={basePath}
+        active="tournaments"
+        visibleTabs={["profile", "agenda", "elo", "team", "tournaments"]}
+      />
       <TournamentsTab userId={userId} basePath={`/coach/team/${teamSlug}/tournaments`} />
     </div>
   );

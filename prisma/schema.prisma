@@ -105,6 +105,8 @@ model User {
   createdEvents     Event[]       @relation("EventCreatedBy")
   documents         Document[]    @relation("DocumentOwner")
   uploadedDocuments Document[]    @relation("DocumentUploadedBy")
+  vods              Vod[]         @relation("VodCreatedBy")
+  socialPosts       SocialPost[]  @relation("SocialPostCreatedBy")
 }
 
 model Document {
@@ -233,6 +235,32 @@ model Tournament {
 
   registrations TeamTournamentRegistration[]
   events        Event[]
+}
+
+model Vod {
+  id          String   @id @default(cuid())
+  url         String
+  description String?
+  createdById String
+  createdBy   User     @relation("VodCreatedBy", fields: [createdById], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+}
+
+enum SocialPlatform {
+  INSTAGRAM
+  TIKTOK
+  X
+  OTHER
+}
+
+model SocialPost {
+  id          String         @id @default(cuid())
+  url         String
+  description String?
+  platform    SocialPlatform
+  createdById String
+  createdBy   User           @relation("SocialPostCreatedBy", fields: [createdById], references: [id], onDelete: Cascade)
+  createdAt   DateTime       @default(now())
 }
 
 model TeamTournamentRegistration {
