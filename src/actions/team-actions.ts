@@ -36,6 +36,39 @@ export async function removeCoachAction(coachAssignmentId: string): Promise<void
   revalidatePath("/admin/teams");
 }
 
+export async function updateCoachTeamsAction(
+  _prevState: ActionResult | null,
+  formData: FormData
+): Promise<ActionResult> {
+  await requireRole("ADMIN");
+
+  const userId = formData.get("userId") as string;
+  const teamIds = formData.getAll("teamIds") as string[];
+
+  const user = await db.user.findUnique({ where: { id: userId } });
+  if (!user || user.role !== "COACH") {
+    return { ok: false, error: "Usuário não é um coach" };
+  }
+
+  await db.$transaction([
+    db.coachAssignment.deleteMany({
+      where: { userId, ...(teamIds.length > 0 ? { teamId: { notIn: teamIds } } : {}) },
+    }),
+    ...teamIds.map((teamId) =>
+      db.coachAssignment.upsert({
+        where: { userId_teamId: { userId, teamId } },
+        update: {},
+        create: { userId, teamId },
+      })
+    ),
+  ]);
+
+  revalidatePath("/admin/users");
+  revalidatePath(`/admin/users/${userId}`);
+  revalidatePath("/admin/teams");
+  return { ok: true, message: "Times do coach atualizados" };
+}
+
 export async function toggleMemberTagAction(
   userId: string,
   tag: "isIgl" | "isCaptain"

@@ -11,6 +11,7 @@ import { TournamentsTab } from "@/components/profile/tournaments-tab";
 import { DocumentsTab } from "@/components/profile/documents-tab";
 import { StatusToggles } from "@/components/admin/status-toggles";
 import { DeleteUserButton } from "@/components/admin/delete-user-button";
+import { CoachTeamsForm } from "@/components/admin/coach-teams-form";
 
 export default async function AdminUserDetailPage({
   params,
@@ -26,6 +27,10 @@ export default async function AdminUserDetailPage({
   const user = await db.user.findUnique({ where: { id: userId } });
   if (!user) notFound();
   const teams = await db.team.findMany({ orderBy: { name: "asc" } });
+  const coachAssignments =
+    user.role === "COACH"
+      ? await db.coachAssignment.findMany({ where: { userId: user.id }, select: { teamId: true } })
+      : [];
 
   const profileInfo = await ProfileInfoTab({ userId: user.id, editable: true });
   const agenda = await AgendaTab({ userId: user.id, canRespond: false });
@@ -50,6 +55,17 @@ export default async function AdminUserDetailPage({
         <h2 className="mb-3 text-sm font-semibold">Role e time</h2>
         <UserRoleTeamForm userId={user.id} role={user.role} teamId={user.teamId} teams={teams} />
       </Card>
+
+      {user.role === "COACH" && (
+        <Card>
+          <h2 className="mb-3 text-sm font-semibold">Times que treina</h2>
+          <CoachTeamsForm
+            userId={user.id}
+            teams={teams}
+            assignedTeamIds={coachAssignments.map((a) => a.teamId)}
+          />
+        </Card>
+      )}
 
       {profileInfo}
       <StatusToggles user={user} />
