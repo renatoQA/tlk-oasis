@@ -1,30 +1,58 @@
 "use client";
 
-import { useActionState, useEffect, useRef } from "react";
-import { uploadImageAction } from "@/actions/upload-actions";
+import { useRef, useState } from "react";
+import { upload } from "@vercel/blob/client";
 import { Button } from "@/components/ui/button";
 import { blobProxyUrl } from "@/lib/blob-proxy";
+
+const MAX_SIZE = 5 * 1024 * 1024;
 
 export function ImageUploadButton({
   label = "Enviar imagem",
   currentUrl,
   onUploaded,
+  kind = "photo",
 }: {
   label?: string;
   currentUrl?: string | null;
   onUploaded: (url: string) => void;
+  kind?: "photo" | "team-logo" | "tournament-image";
 }) {
-  const [state, formAction, pending] = useActionState(uploadImageAction, null);
-  const formRef = useRef<HTMLFormElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const preview = state?.ok ? state.url : (currentUrl ?? null);
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [uploadedUrl, setUploadedUrl] = useState<string | null>(null);
+  const preview = uploadedUrl ?? currentUrl ?? null;
 
-  useEffect(() => {
-    if (state?.ok) {
-      onUploaded(state.url);
+  async function handleFile(file: File | null) {
+    if (!file) return;
+    setError(null);
+    if (!file.type.startsWith("image/")) {
+      setError("Só é permitido enviar imagens");
+      return;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state]);
+    if (file.size > MAX_SIZE) {
+      setError("Imagem muito grande (máx 5MB)");
+      return;
+    }
+
+    setPending(true);
+    try {
+      const ext = file.name.split(".").pop() ?? "bin";
+      const blob = await upload(`uploads/${crypto.randomUUID()}.${ext}`, file, {
+        access: "private",
+        handleUploadUrl: "/api/blob/upload",
+        clientPayload: JSON.stringify({ kind }),
+      });
+      setUploadedUrl(blob.url);
+      onUploaded(blob.url);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Erro ao enviar imagem");
+    } finally {
+      setPending(false);
+      if (inputRef.current) inputRef.current.value = "";
+    }
+  }
 
   return (
     <div className="flex items-center gap-3">
@@ -36,26 +64,23 @@ export function ImageUploadButton({
           className="h-14 w-14 rounded-lg border border-border object-cover"
         />
       )}
-      <form ref={formRef} action={formAction}>
-        <input
-          ref={inputRef}
-          type="file"
-          name="file"
-          accept="image/*"
-          className="hidden"
-          disabled={pending}
-          onChange={() => formRef.current?.requestSubmit()}
-        />
-        <Button
-          type="button"
-          variant="secondary"
-          disabled={pending}
-          onClick={() => inputRef.current?.click()}
-        >
-          {pending ? "Enviando..." : label}
-        </Button>
-      </form>
-      {state && !state.ok && <p className="text-xs text-red-300">{state.error}</p>}
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        disabled={pending}
+        onChange={(e) => handleFile(e.target.files?.[0] ?? null)}
+      />
+      <Button
+        type="button"
+        variant="secondary"
+        disabled={pending}
+        onClick={() => inputRef.current?.click()}
+      >
+        {pending ? "Enviando..." : label}
+      </Button>
+      {error && <p className="text-xs text-red-300">{error}</p>}
     </div>
   );
 }

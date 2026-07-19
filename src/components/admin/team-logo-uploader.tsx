@@ -11,6 +11,7 @@ export function TeamLogoUploader({ teamId, currentUrl }: { teamId: string; curre
     <ImageUploadButton
       label="Alterar logo do time"
       currentUrl={currentUrl}
+      kind="team-logo"
       onUploaded={async (url) => {
         await setTeamLogoAction(teamId, url);
         router.refresh();

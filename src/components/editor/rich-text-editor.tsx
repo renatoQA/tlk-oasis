@@ -4,8 +4,8 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
 import { useRef } from "react";
+import { upload } from "@vercel/blob/client";
 import { cn } from "@/lib/utils";
-import { uploadImage } from "@/actions/upload-actions";
 import { blobProxyUrl } from "@/lib/blob-proxy";
 
 export function RichTextEditor({
@@ -39,11 +39,16 @@ export function RichTextEditor({
 
   async function handleFile(file: File | null) {
     if (!file || !editor) return;
-    const formData = new FormData();
-    formData.set("file", file);
-    const result = await uploadImage(formData);
-    if (result.ok) {
-      editor.chain().focus().setImage({ src: blobProxyUrl(result.url) }).run();
+    try {
+      const ext = file.name.split(".").pop() ?? "bin";
+      const blob = await upload(`uploads/${crypto.randomUUID()}.${ext}`, file, {
+        access: "private",
+        handleUploadUrl: "/api/blob/upload",
+        clientPayload: JSON.stringify({ kind: "tournament-image" }),
+      });
+      editor.chain().focus().setImage({ src: blobProxyUrl(blob.url) }).run();
+    } catch {
+      // upload falhou silenciosamente; usuário pode tentar de novo pelo botão
     }
   }
 

@@ -48,7 +48,12 @@ export function CreateTournamentForm() {
       <div>
         <Label>Imagem/logo do campeonato</Label>
         <input type="hidden" name="imageUrl" value={imageUrl} />
-        <ImageUploadButton label="Enviar imagem" currentUrl={imageUrl || null} onUploaded={setImageUrl} />
+        <ImageUploadButton
+          label="Enviar imagem"
+          currentUrl={imageUrl || null}
+          kind="tournament-image"
+          onUploaded={setImageUrl}
+        />
       </div>
 
       <div>
