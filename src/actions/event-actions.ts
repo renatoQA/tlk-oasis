@@ -85,4 +85,5 @@ export async function deleteEventAction(eventId: string): Promise<void> {
 
   await db.event.delete({ where: { id: eventId } });
   revalidatePath(`/coach/team`);
+  revalidatePath("/admin/events");
 }

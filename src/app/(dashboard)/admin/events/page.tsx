@@ -1,6 +1,8 @@
 import { requireRole } from "@/lib/session";
 import { db } from "@/lib/db";
 import { Card, Badge } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { deleteEventAction } from "@/actions/event-actions";
 
 const TYPE_LABEL: Record<string, string> = {
   TRAINING: "Treino",
@@ -26,24 +28,35 @@ export default async function AdminEventsPage() {
         </Card>
       ) : (
         <div className="space-y-3">
-          {events.map((event) => (
-            <Card key={event.id}>
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <p className="font-medium">{event.title}</p>
-                    <Badge tone="muted">{TYPE_LABEL[event.type]}</Badge>
-                    <Badge tone="purple">{event.team.name}</Badge>
+          {events.map((event) => {
+            const accepted = event.invites.filter((i) => i.status === "ACCEPTED").length;
+            const declined = event.invites.filter((i) => i.status === "DECLINED").length;
+            return (
+              <Card key={event.id}>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <p className="font-medium">{event.title}</p>
+                      <Badge tone="muted">{TYPE_LABEL[event.type]}</Badge>
+                      <Badge tone="purple">{event.team.name}</Badge>
+                    </div>
+                    <p className="mt-1 text-xs text-muted">
+                      {event.startsAt.toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" })}
+                      {event.location && ` · ${event.location}`}
+                    </p>
+                    <p className="mt-2 text-xs text-muted">
+                      {accepted} aceitos · {declined} recusados · {event.invites.length} convidados
+                    </p>
                   </div>
-                  <p className="mt-1 text-xs text-muted">
-                    {event.startsAt.toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" })}
-                    {event.location && ` · ${event.location}`}
-                  </p>
+                  <form action={deleteEventAction.bind(null, event.id)}>
+                    <Button type="submit" variant="ghost" className="text-xs text-red-300">
+                      Excluir
+                    </Button>
+                  </form>
                 </div>
-                <span className="text-xs text-muted">{event.invites.length} convidados</span>
-              </div>
-            </Card>
-          ))}
+              </Card>
+            );
+          })}
         </div>
       )}
     </div>

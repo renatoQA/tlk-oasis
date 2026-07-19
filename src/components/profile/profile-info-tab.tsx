@@ -3,10 +3,15 @@ import { Card } from "@/components/ui/card";
 import { ProfilePhotoUploader } from "@/components/profile/profile-photo-uploader";
 import { ProfileBioForm } from "@/components/profile/profile-bio-form";
 import { RiotIdTab } from "@/components/profile/riot-id-tab";
+import { AvailabilityForm } from "@/components/profile/availability-form";
+import { AvailabilityList } from "@/components/profile/availability-list";
 import { Avatar } from "@/components/ui/avatar";
 
 export async function ProfileInfoTab({ userId, editable }: { userId: string; editable: boolean }) {
-  const user = await db.user.findUniqueOrThrow({ where: { id: userId } });
+  const user = await db.user.findUniqueOrThrow({
+    where: { id: userId },
+    include: { availability: { orderBy: { dayOfWeek: "asc" } } },
+  });
 
   return (
     <div className="space-y-4">
@@ -49,6 +54,17 @@ export async function ProfileInfoTab({ userId, editable }: { userId: string; edi
       </Card>
 
       {user.role === "PLAYER" && <RiotIdTab userId={userId} editable={editable} />}
+
+      {user.role === "PLAYER" && (
+        <Card>
+          <h3 className="mb-4 text-base font-semibold">Disponibilidade para reuniões</h3>
+          {editable ? (
+            <AvailabilityForm availability={user.availability} />
+          ) : (
+            <AvailabilityList availability={user.availability} />
+          )}
+        </Card>
+      )}
     </div>
   );
 }

@@ -8,7 +8,7 @@ export default async function PlayerTeamPage() {
   return (
     <div>
       <ProfileTabNav basePath="/player/profile" active="team" />
-      <TeamTab userId={session.user.id} />
+      <TeamTab userId={session.user.id} canScheduleMeeting={session.user.role === "PLAYER"} />
     </div>
   );
 }

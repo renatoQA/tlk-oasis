@@ -1,8 +1,15 @@
+import Link from "next/link";
 import { db } from "@/lib/db";
 import { Card, Badge } from "@/components/ui/card";
 import { Avatar, TeamLogo } from "@/components/ui/avatar";
 
-export async function TeamTab({ userId }: { userId: string }) {
+export async function TeamTab({
+  userId,
+  canScheduleMeeting = false,
+}: {
+  userId: string;
+  canScheduleMeeting?: boolean;
+}) {
   const user = await db.user.findUnique({
     where: { id: userId },
     include: { team: { include: { members: true } } },
@@ -31,10 +38,18 @@ export async function TeamTab({ userId }: { userId: string }) {
               <Avatar src={member.photoUrl} name={member.name ?? member.email} size="sm" />
               {member.name ?? member.email}
             </span>
-            <div className="flex gap-1.5">
+            <div className="flex items-center gap-1.5">
               {member.isCaptain && <Badge tone="pink">Capitão</Badge>}
               {member.isIgl && <Badge tone="purple">IGL</Badge>}
               {member.id === userId && <Badge tone="muted">você</Badge>}
+              {canScheduleMeeting && member.id !== userId && (
+                <Link
+                  href={`/player/profile/meetings/new?targetUserId=${member.id}`}
+                  className="rounded px-1.5 py-0.5 text-xs text-brand-pink-light hover:bg-card-hover"
+                >
+                  Marcar reunião
+                </Link>
+              )}
             </div>
           </li>
         ))}

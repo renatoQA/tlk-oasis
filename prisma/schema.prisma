@@ -107,6 +107,19 @@ model User {
   uploadedDocuments Document[]    @relation("DocumentUploadedBy")
   vods              Vod[]         @relation("VodCreatedBy")
   socialPosts       SocialPost[]  @relation("SocialPostCreatedBy")
+  availability      Availability[]
+}
+
+model Availability {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  dayOfWeek Int // 1=Segunda .. 7=Domingo
+  startTime String // "HH:MM"
+  endTime   String // "HH:MM"
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, dayOfWeek])
 }
 
 model Document {
