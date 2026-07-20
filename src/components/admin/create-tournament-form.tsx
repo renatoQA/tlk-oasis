@@ -5,15 +5,29 @@ import { Input, Label } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ImageUploadButton } from "@/components/ui/image-upload-button";
 import { RichTextEditor } from "@/components/editor/rich-text-editor";
-import { createTournamentAction } from "@/actions/tournament-actions";
+import { createTournamentAction, updateTournamentAction } from "@/actions/tournament-actions";
 
-export function CreateTournamentForm() {
-  const [state, formAction, pending] = useActionState(createTournamentAction, null);
-  const [imageUrl, setImageUrl] = useState("");
-  const [description, setDescription] = useState("");
+export function CreateTournamentForm({
+  tournament,
+}: {
+  tournament?: {
+    id: string;
+    name: string;
+    organizer: string | null;
+    startDate: string;
+    endDate: string | null;
+    description: string | null;
+    imageUrl: string | null;
+  };
+}) {
+  const action = tournament ? updateTournamentAction : createTournamentAction;
+  const [state, formAction, pending] = useActionState(action, null);
+  const [imageUrl, setImageUrl] = useState(tournament?.imageUrl ?? "");
+  const [description, setDescription] = useState(tournament?.description ?? "");
 
   return (
     <form action={formAction} className="space-y-4">
+      {tournament && <input type="hidden" name="tournamentId" value={tournament.id} />}
       {state && (
         <p
           className={`rounded-lg px-3 py-2 text-sm ${
@@ -28,20 +42,20 @@ export function CreateTournamentForm() {
 
       <div>
         <Label htmlFor="name">Nome</Label>
-        <Input id="name" name="name" required />
+        <Input id="name" name="name" defaultValue={tournament?.name} required />
       </div>
       <div>
         <Label htmlFor="organizer">Organizador</Label>
-        <Input id="organizer" name="organizer" />
+        <Input id="organizer" name="organizer" defaultValue={tournament?.organizer ?? undefined} />
       </div>
       <div className="flex gap-2">
         <div className="flex-1">
           <Label htmlFor="startDate">Início</Label>
-          <Input id="startDate" name="startDate" type="date" required />
+          <Input id="startDate" name="startDate" type="date" defaultValue={tournament?.startDate} required />
         </div>
         <div className="flex-1">
           <Label htmlFor="endDate">Fim</Label>
-          <Input id="endDate" name="endDate" type="date" />
+          <Input id="endDate" name="endDate" type="date" defaultValue={tournament?.endDate ?? undefined} />
         </div>
       </div>
 
@@ -63,7 +77,13 @@ export function CreateTournamentForm() {
       </div>
 
       <Button type="submit" disabled={pending} className="w-full">
-        {pending ? "Criando..." : "Criar campeonato"}
+        {pending
+          ? tournament
+            ? "Salvando..."
+            : "Criando..."
+          : tournament
+            ? "Salvar alterações"
+            : "Criar campeonato"}
       </Button>
     </form>
   );

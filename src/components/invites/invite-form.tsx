@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import { Input, Label } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { CopyLinkButton } from "@/components/shared/copy-link-button";
 import { createInviteAction } from "@/actions/invite-actions";
 
 type Team = { id: string; name: string };
@@ -22,6 +23,12 @@ export function InviteForm({ teams }: { teams: Team[] }) {
         >
           {state.ok ? state.message : state.error}
         </p>
+      )}
+
+      {state?.ok && (
+        <div className="flex items-center gap-2">
+          <CopyLinkButton path={`/invite/${state.token}`} />
+        </div>
       )}
 
       <div>

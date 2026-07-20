@@ -2,6 +2,7 @@ import { requireRole } from "@/lib/session";
 import { db } from "@/lib/db";
 import { Card, Badge } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { CopyLinkButton } from "@/components/shared/copy-link-button";
 import { InviteForm } from "@/components/invites/invite-form";
 import { revokeInviteAction } from "@/actions/invite-actions";
 
@@ -41,20 +42,18 @@ export default async function AdminInvitesPage() {
                       {invite.teamId && ` · ${teamNameById.get(invite.teamId)}`} · expira em{" "}
                       {invite.expiresAt.toLocaleDateString("pt-BR")}
                     </p>
-                    {invite.status === "PENDING" && (
-                      <p className="mt-1 truncate text-xs text-brand-pink-light">
-                        /invite/{invite.token}
-                      </p>
-                    )}
                   </div>
                   <div className="flex items-center gap-2">
                     <Badge tone={STATUS_TONE[invite.status]}>{invite.status}</Badge>
                     {invite.status === "PENDING" && (
-                      <form action={revokeInviteAction.bind(null, invite.id)}>
-                        <Button type="submit" variant="ghost" className="text-xs text-red-300">
-                          Revogar
-                        </Button>
-                      </form>
+                      <>
+                        <CopyLinkButton path={`/invite/${invite.token}`} />
+                        <form action={revokeInviteAction.bind(null, invite.id)}>
+                          <Button type="submit" variant="ghost" className="text-xs text-red-300">
+                            Revogar
+                          </Button>
+                        </form>
+                      </>
                     )}
                   </div>
                 </div>

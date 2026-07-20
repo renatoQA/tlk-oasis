@@ -10,12 +10,16 @@ import { signIn } from "@/lib/auth";
 
 export type ActionResult = { ok: true; message?: string } | { ok: false; error: string };
 
+export type CreateInviteResult =
+  | { ok: true; message: string; token: string }
+  | { ok: false; error: string };
+
 // Only admins create invites - coaches manage agenda/elo/tournaments for
 // their team but do not onboard new accounts (confirmed with the org owner).
 export async function createInviteAction(
-  _prevState: ActionResult | null,
+  _prevState: CreateInviteResult | null,
   formData: FormData
-): Promise<ActionResult> {
+): Promise<CreateInviteResult> {
   const session = await requireRole("ADMIN");
 
   const parsed = createInviteSchema.safeParse({
@@ -33,9 +37,9 @@ export async function createInviteAction(
     return { ok: false, error: "Já existe uma conta com esse email" };
   }
 
-  await createInvite({ email, role, teamId, createdById: session.user.id });
+  const invite = await createInvite({ email, role, teamId, createdById: session.user.id });
   revalidatePath("/admin/invites");
-  return { ok: true, message: "Convite criado com sucesso" };
+  return { ok: true, message: "Convite criado com sucesso", token: invite.token };
 }
 
 export async function revokeInviteAction(inviteId: string): Promise<void> {
