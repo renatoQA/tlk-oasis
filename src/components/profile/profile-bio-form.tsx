@@ -11,6 +11,8 @@ type Bio = {
   address: string | null;
   birthDate: string | null;
   shirtSize: string | null;
+  pixKeyType: string | null;
+  pixKey: string | null;
 };
 
 export function ProfileBioForm({ userId, bio }: { userId: string; bio: Bio }) {
@@ -57,6 +59,25 @@ export function ProfileBioForm({ userId, bio }: { userId: string; bio: Bio }) {
         <div className="sm:col-span-2">
           <Label htmlFor="address">Endereço</Label>
           <Input id="address" name="address" defaultValue={bio.address ?? ""} />
+        </div>
+        <div>
+          <Label htmlFor="pixKeyType">Tipo de chave Pix</Label>
+          <select
+            id="pixKeyType"
+            name="pixKeyType"
+            defaultValue={bio.pixKeyType ?? ""}
+            className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm"
+          >
+            <option value="">Sem chave Pix</option>
+            <option value="CPF">CPF</option>
+            <option value="PHONE">Telefone</option>
+            <option value="RANDOM">Chave aleatória</option>
+            <option value="EMAIL">Email</option>
+          </select>
+        </div>
+        <div>
+          <Label htmlFor="pixKey">Chave Pix</Label>
+          <Input id="pixKey" name="pixKey" defaultValue={bio.pixKey ?? ""} />
         </div>
       </div>
 

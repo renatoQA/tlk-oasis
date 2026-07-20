@@ -7,6 +7,13 @@ import { AvailabilityForm } from "@/components/profile/availability-form";
 import { AvailabilityList } from "@/components/profile/availability-list";
 import { Avatar } from "@/components/ui/avatar";
 
+const PIX_KEY_TYPE_LABEL: Record<string, string> = {
+  CPF: "CPF",
+  PHONE: "Telefone",
+  RANDOM: "Chave aleatória",
+  EMAIL: "Email",
+};
+
 export async function ProfileInfoTab({ userId, editable }: { userId: string; editable: boolean }) {
   const user = await db.user.findUniqueOrThrow({
     where: { id: userId },
@@ -37,6 +44,8 @@ export async function ProfileInfoTab({ userId, editable }: { userId: string; edi
               address: user.address,
               birthDate: user.birthDate ? user.birthDate.toISOString().slice(0, 10) : null,
               shirtSize: user.shirtSize,
+              pixKeyType: user.pixKeyType,
+              pixKey: user.pixKey,
             }}
           />
         ) : (
@@ -49,6 +58,14 @@ export async function ProfileInfoTab({ userId, editable }: { userId: string; edi
             />
             <Info label="Tamanho de camiseta" value={user.shirtSize} />
             <Info label="Endereço" value={user.address} />
+            <Info
+              label="Chave Pix"
+              value={
+                user.pixKeyType && user.pixKey
+                  ? `${PIX_KEY_TYPE_LABEL[user.pixKeyType]}: ${user.pixKey}`
+                  : null
+              }
+            />
           </dl>
         )}
       </Card>

@@ -6,13 +6,20 @@ import { db } from "@/lib/db";
 import { requireSession } from "@/lib/session";
 import type { ActionResult } from "./invite-actions";
 
-const profileInfoSchema = z.object({
-  nick: z.string().optional(),
-  instagram: z.string().optional(),
-  address: z.string().optional(),
-  birthDate: z.string().optional(),
-  shirtSize: z.string().optional(),
-});
+const profileInfoSchema = z
+  .object({
+    nick: z.string().optional(),
+    instagram: z.string().optional(),
+    address: z.string().optional(),
+    birthDate: z.string().optional(),
+    shirtSize: z.string().optional(),
+    pixKeyType: z.enum(["CPF", "PHONE", "RANDOM", "EMAIL"]).optional(),
+    pixKey: z.string().optional(),
+  })
+  .refine((data) => !data.pixKeyType || !!data.pixKey, {
+    message: "Informe a chave Pix",
+    path: ["pixKey"],
+  });
 
 export async function updateProfileInfoAction(
   _prevState: ActionResult | null,
@@ -31,12 +38,14 @@ export async function updateProfileInfoAction(
     address: formData.get("address") || undefined,
     birthDate: formData.get("birthDate") || undefined,
     shirtSize: formData.get("shirtSize") || undefined,
+    pixKeyType: formData.get("pixKeyType") || undefined,
+    pixKey: formData.get("pixKey") || undefined,
   });
   if (!parsed.success) {
     return { ok: false, error: parsed.error.issues[0]?.message ?? "Dados inválidos" };
   }
 
-  const { nick, instagram, address, birthDate, shirtSize } = parsed.data;
+  const { nick, instagram, address, birthDate, shirtSize, pixKeyType, pixKey } = parsed.data;
 
   await db.user.update({
     where: { id: targetUserId },
@@ -46,6 +55,8 @@ export async function updateProfileInfoAction(
       address,
       shirtSize,
       birthDate: birthDate ? new Date(birthDate) : null,
+      pixKeyType: pixKeyType ?? null,
+      pixKey: pixKeyType ? pixKey : null,
     },
   });
 

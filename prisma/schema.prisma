@@ -36,6 +36,13 @@ enum RsvpStatus {
   DECLINED
 }
 
+enum PixKeyType {
+  CPF
+  PHONE
+  RANDOM
+  EMAIL
+}
+
 enum TournamentRegistrationStatus {
   PLANNED
   REGISTERED
@@ -86,6 +93,9 @@ model User {
   address    String?
   birthDate  DateTime?
   shirtSize  String?
+
+  pixKeyType PixKeyType?
+  pixKey     String?
 
   contractSent    Boolean @default(false)
   contractSigned  Boolean @default(false)
