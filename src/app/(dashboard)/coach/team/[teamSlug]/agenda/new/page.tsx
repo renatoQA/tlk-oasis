@@ -20,10 +20,35 @@ export default async function NewEventPage({
   if (!team) notFound();
   if (!(await canManageTeam(session.user, team.id))) redirect(homeForRole(session.user.role));
 
-  const roster = await db.user.findMany({
-    where: { teamId: team.id, role: "PLAYER" },
-    select: { id: true, name: true, email: true },
-  });
+  const [roster, everyone] = await Promise.all([
+    db.user.findMany({
+      where: { teamId: team.id, role: "PLAYER" },
+      select: { id: true, name: true, email: true },
+    }),
+    db.user.findMany({
+      where: { role: { in: ["PLAYER", "COACH"] } },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        team: { select: { name: true } },
+        coachAssignments: { select: { team: { select: { name: true } } } },
+      },
+      orderBy: { name: "asc" },
+    }),
+  ]);
+
+  const allMembers = everyone.map((member) => ({
+    id: member.id,
+    name: member.name,
+    email: member.email,
+    role: member.role,
+    teamLabel:
+      member.role === "COACH"
+        ? member.coachAssignments.map((a) => a.team.name).join(", ") || "Sem time"
+        : (member.team?.name ?? "Sem time"),
+  }));
 
   return (
     <div className="max-w-lg">
@@ -32,6 +57,7 @@ export default async function NewEventPage({
         <EventForm
           teamId={team.id}
           roster={roster}
+          allMembers={allMembers}
           defaultType={type ?? "TRAINING"}
           preselectedPlayerIds={playerId ? [playerId] : []}
         />
