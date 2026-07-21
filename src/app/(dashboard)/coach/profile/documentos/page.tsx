@@ -12,7 +12,7 @@ export default async function CoachProfileDocumentsPage() {
         active="documents"
         visibleTabs={["profile", "documents"]}
       />
-      <DocumentsTab userId={session.user.id} canUpload={false} />
+      <DocumentsTab userId={session.user.id} canUpload />
     </div>
   );
 }

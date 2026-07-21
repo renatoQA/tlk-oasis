@@ -8,7 +8,7 @@ export default async function PlayerDocumentsPage() {
   return (
     <div>
       <ProfileTabNav basePath="/player/profile" active="documents" />
-      <DocumentsTab userId={session.user.id} canUpload={false} />
+      <DocumentsTab userId={session.user.id} canUpload />
     </div>
   );
 }

@@ -28,7 +28,7 @@ const UPLOAD_KINDS: Record<
     allowedContentTypes: ["image/*"],
   },
   document: {
-    roles: ["ADMIN"],
+    roles: ["ADMIN", "COACH", "PLAYER"],
     pathPrefix: "documents/",
     maxSize: 10 * 1024 * 1024,
   },
