@@ -10,7 +10,7 @@ export default async function CoachProfileDocumentsPage() {
       <ProfileTabNav
         basePath="/coach/profile"
         active="documents"
-        visibleTabs={["profile", "documents"]}
+        visibleTabs={["profile", "agenda", "documents"]}
       />
       <DocumentsTab userId={session.user.id} canUpload />
     </div>
