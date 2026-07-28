@@ -27,6 +27,7 @@ const NAV_BY_ROLE: Record<Role, NavItem[]> = {
     { href: "/admin/events", label: "Calendário" },
     { href: "/admin/tournaments", label: "Campeonatos" },
     { href: "/admin/import", label: "Importar planilha" },
+    { href: "/admin/export", label: "Exportar planilha" },
     ...SHARED_NAV,
   ],
 };
