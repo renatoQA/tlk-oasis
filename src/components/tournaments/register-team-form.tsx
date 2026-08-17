@@ -36,7 +36,7 @@ export function RegisterTeamForm({ teamId, tournaments }: { teamId: string; tour
             >
               {tournaments.map((t) => (
                 <option key={t.id} value={t.id}>
-                  {t.name} ({new Date(t.startDate).toLocaleDateString("pt-BR")})
+                  {t.name} ({new Date(t.startDate).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" })})
                 </option>
               ))}
             </select>

@@ -4,7 +4,9 @@ export const createTournamentSchema = z.object({
   name: z.string().min(2, "Nome muito curto"),
   organizer: z.string().optional(),
   startDate: z.string().min(1, "Informe a data de início"),
+  startTime: z.string().optional(),
   endDate: z.string().optional(),
+  endTime: z.string().optional(),
   description: z.string().optional(),
   imageUrl: z.string().optional(),
 });

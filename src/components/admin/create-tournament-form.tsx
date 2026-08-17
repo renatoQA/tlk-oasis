@@ -15,7 +15,9 @@ export function CreateTournamentForm({
     name: string;
     organizer: string | null;
     startDate: string;
+    startTime: string;
     endDate: string | null;
+    endTime: string | null;
     description: string | null;
     imageUrl: string | null;
   };
@@ -53,9 +55,19 @@ export function CreateTournamentForm({
           <Label htmlFor="startDate">Início</Label>
           <Input id="startDate" name="startDate" type="date" defaultValue={tournament?.startDate} required />
         </div>
+        <div className="w-28">
+          <Label htmlFor="startTime">Hora</Label>
+          <Input id="startTime" name="startTime" type="time" defaultValue={tournament?.startTime} />
+        </div>
+      </div>
+      <div className="flex gap-2">
         <div className="flex-1">
           <Label htmlFor="endDate">Fim</Label>
           <Input id="endDate" name="endDate" type="date" defaultValue={tournament?.endDate ?? undefined} />
+        </div>
+        <div className="w-28">
+          <Label htmlFor="endTime">Hora</Label>
+          <Input id="endTime" name="endTime" type="time" defaultValue={tournament?.endTime ?? undefined} />
         </div>
       </div>
 

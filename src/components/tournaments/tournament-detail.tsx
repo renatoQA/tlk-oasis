@@ -36,8 +36,9 @@ export function TournamentDetail({
       )}
       <h1 className="text-xl font-semibold">{tournament.name}</h1>
       <p className="mt-1 text-sm text-muted">
-        {tournament.startDate.toLocaleDateString("pt-BR")}
-        {tournament.endDate && ` – ${tournament.endDate.toLocaleDateString("pt-BR")}`}
+        {tournament.startDate.toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" })}
+        {tournament.endDate &&
+          ` – ${tournament.endDate.toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" })}`}
         {tournament.organizer && ` · ${tournament.organizer}`}
       </p>
 

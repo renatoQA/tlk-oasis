@@ -3,6 +3,7 @@ import { requireRole } from "@/lib/session";
 import { db } from "@/lib/db";
 import { Card, Badge } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { toLocalDateInput, toLocalTimeInput } from "@/lib/utils";
 import { TournamentDetail } from "@/components/tournaments/tournament-detail";
 import { CreateTournamentForm } from "@/components/admin/create-tournament-form";
 import { unregisterTeamAction, deleteTournamentAction } from "@/actions/tournament-actions";
@@ -72,8 +73,10 @@ export default async function AdminTournamentDetailPage({
                 id: tournament.id,
                 name: tournament.name,
                 organizer: tournament.organizer,
-                startDate: tournament.startDate.toISOString().slice(0, 10),
-                endDate: tournament.endDate ? tournament.endDate.toISOString().slice(0, 10) : null,
+                startDate: toLocalDateInput(tournament.startDate),
+                startTime: toLocalTimeInput(tournament.startDate),
+                endDate: tournament.endDate ? toLocalDateInput(tournament.endDate) : null,
+                endTime: tournament.endDate ? toLocalTimeInput(tournament.endDate) : null,
                 description: tournament.description,
                 imageUrl: tournament.imageUrl,
               }}

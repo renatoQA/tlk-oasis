@@ -39,8 +39,9 @@ export async function TournamentsTab({ userId, basePath }: { userId: string; bas
               <Link href={`${basePath}/${reg.tournament.id}`} className="hover:text-brand-pink-light">
                 <p className="font-medium">{reg.tournament.name}</p>
                 <p className="text-xs text-muted">
-                  {reg.tournament.startDate.toLocaleDateString("pt-BR")}
-                  {reg.tournament.endDate && ` – ${reg.tournament.endDate.toLocaleDateString("pt-BR")}`}
+                  {reg.tournament.startDate.toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" })}
+                  {reg.tournament.endDate &&
+                    ` – ${reg.tournament.endDate.toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" })}`}
                 </p>
               </Link>
               <Badge tone={STATUS_TONE[reg.status]}>{reg.status}</Badge>

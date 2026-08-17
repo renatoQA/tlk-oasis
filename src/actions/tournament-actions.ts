@@ -9,6 +9,10 @@ import { createTournamentSchema, registerTeamSchema } from "@/lib/validators/tou
 import { sanitizeRichText } from "@/lib/sanitize";
 import type { ActionResult } from "./invite-actions";
 
+function combineDateTime(date: string, time?: string): Date {
+  return new Date(`${date}T${time || "00:00"}`);
+}
+
 export async function createTournamentAction(
   _prevState: ActionResult | null,
   formData: FormData
@@ -19,7 +23,9 @@ export async function createTournamentAction(
     name: formData.get("name"),
     organizer: formData.get("organizer") || undefined,
     startDate: formData.get("startDate"),
+    startTime: formData.get("startTime") || undefined,
     endDate: formData.get("endDate") || undefined,
+    endTime: formData.get("endTime") || undefined,
     description: formData.get("description") || undefined,
     imageUrl: formData.get("imageUrl") || undefined,
   });
@@ -27,14 +33,14 @@ export async function createTournamentAction(
     return { ok: false, error: parsed.error.issues[0]?.message ?? "Dados inválidos" };
   }
 
-  const { name, organizer, startDate, endDate, description, imageUrl } = parsed.data;
+  const { name, organizer, startDate, startTime, endDate, endTime, description, imageUrl } = parsed.data;
 
   await db.tournament.create({
     data: {
       name,
       organizer,
-      startDate: new Date(startDate),
-      endDate: endDate ? new Date(endDate) : null,
+      startDate: combineDateTime(startDate, startTime),
+      endDate: endDate ? combineDateTime(endDate, endTime) : null,
       description: description ? sanitizeRichText(description) : null,
       imageUrl,
     },
@@ -56,7 +62,9 @@ export async function updateTournamentAction(
     name: formData.get("name"),
     organizer: formData.get("organizer") || undefined,
     startDate: formData.get("startDate"),
+    startTime: formData.get("startTime") || undefined,
     endDate: formData.get("endDate") || undefined,
+    endTime: formData.get("endTime") || undefined,
     description: formData.get("description") || undefined,
     imageUrl: formData.get("imageUrl") || undefined,
   });
@@ -64,15 +72,15 @@ export async function updateTournamentAction(
     return { ok: false, error: parsed.error?.issues[0]?.message ?? "Dados inválidos" };
   }
 
-  const { name, organizer, startDate, endDate, description, imageUrl } = parsed.data;
+  const { name, organizer, startDate, startTime, endDate, endTime, description, imageUrl } = parsed.data;
 
   await db.tournament.update({
     where: { id: tournamentId },
     data: {
       name,
       organizer,
-      startDate: new Date(startDate),
-      endDate: endDate ? new Date(endDate) : null,
+      startDate: combineDateTime(startDate, startTime),
+      endDate: endDate ? combineDateTime(endDate, endTime) : null,
       description: description ? sanitizeRichText(description) : null,
       imageUrl,
     },

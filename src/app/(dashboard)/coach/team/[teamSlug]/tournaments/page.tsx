@@ -3,8 +3,8 @@ import { notFound, redirect } from "next/navigation";
 import { requireRole, homeForRole } from "@/lib/session";
 import { canManageTeam } from "@/lib/permissions";
 import { db } from "@/lib/db";
-import { Card, Badge } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { TournamentCalendar } from "@/components/tournaments/tournament-calendar";
 
 const STATUS_TONE: Record<string, "purple" | "pink" | "green" | "yellow" | "red" | "muted"> = {
   PLANNED: "muted",
@@ -41,30 +41,17 @@ export default async function CoachTeamTournamentsPage({
         </Link>
       </div>
 
-      {registrations.length === 0 ? (
-        <Card>
-          <p className="text-sm text-muted">Nenhuma inscrição ainda.</p>
-        </Card>
-      ) : (
-        <div className="space-y-3">
-          {registrations.map((reg) => (
-            <Link key={reg.id} href={`/coach/team/${team.slug}/tournaments/${reg.tournament.id}`}>
-              <Card className="card-hover-effect">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium">{reg.tournament.name}</p>
-                    <p className="text-xs text-muted">
-                      {reg.tournament.startDate.toLocaleDateString("pt-BR")}
-                      {reg.tournament.endDate && ` – ${reg.tournament.endDate.toLocaleDateString("pt-BR")}`}
-                    </p>
-                  </div>
-                  <Badge tone={STATUS_TONE[reg.status]}>{reg.status}</Badge>
-                </div>
-              </Card>
-            </Link>
-          ))}
-        </div>
-      )}
+      <TournamentCalendar
+        tournaments={registrations.map((reg) => ({
+          id: reg.id,
+          name: reg.tournament.name,
+          organizer: reg.tournament.organizer,
+          startDate: reg.tournament.startDate.toISOString(),
+          endDate: reg.tournament.endDate ? reg.tournament.endDate.toISOString() : null,
+          href: `/coach/team/${team.slug}/tournaments/${reg.tournament.id}`,
+          badges: [{ key: reg.id, label: reg.status, tone: STATUS_TONE[reg.status] }],
+        }))}
+      />
     </div>
   );
 }
