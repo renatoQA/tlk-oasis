@@ -8,6 +8,7 @@ type StatusUser = {
   contractSigned: boolean;
   shirtRequested: boolean;
   shirtSent: boolean;
+  shirtTrackingCode: string | null;
   shirtReceived: boolean;
 };
 
@@ -32,6 +33,23 @@ export function StatusView({ user, canMarkReceived }: { user: StatusUser; canMar
           Camiseta recebida: {user.shirtReceived ? "Sim" : "Não"}
         </Badge>
       </div>
+      {user.shirtTrackingCode && (
+        <p className="mt-3 text-sm text-muted">
+          Rastreio:{" "}
+          {/^https?:\/\//.test(user.shirtTrackingCode) ? (
+            <a
+              href={user.shirtTrackingCode}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-brand-pink-light hover:underline"
+            >
+              {user.shirtTrackingCode}
+            </a>
+          ) : (
+            <span className="text-foreground">{user.shirtTrackingCode}</span>
+          )}
+        </p>
+      )}
       {canMarkReceived && (
         <form action={markShirtReceivedAction.bind(null, user.id)} className="mt-3">
           <Button type="submit" variant="secondary">

@@ -1,6 +1,7 @@
 import { Card, Badge } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toggleContractStatusAction, toggleShirtStatusAction, markShirtReceivedAction } from "@/actions/status-actions";
+import { ShirtTrackingForm } from "@/components/admin/shirt-tracking-form";
 
 type StatusUser = {
   id: string;
@@ -8,6 +9,7 @@ type StatusUser = {
   contractSigned: boolean;
   shirtRequested: boolean;
   shirtSent: boolean;
+  shirtTrackingCode: string | null;
   shirtReceived: boolean;
 };
 
@@ -59,6 +61,7 @@ export function StatusToggles({ user }: { user: StatusUser }) {
         active={user.shirtSent}
         action={toggleShirtStatusAction.bind(null, user.id, "shirtSent")}
       />
+      <ShirtTrackingForm userId={user.id} shirtTrackingCode={user.shirtTrackingCode} />
       <ToggleRow
         label="Camiseta recebida (marcado pelo player/coach)"
         active={user.shirtReceived}

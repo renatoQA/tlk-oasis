@@ -97,11 +97,12 @@ model User {
   pixKeyType PixKeyType?
   pixKey     String?
 
-  contractSent    Boolean @default(false)
-  contractSigned  Boolean @default(false)
-  shirtRequested  Boolean @default(false)
-  shirtSent       Boolean @default(false)
-  shirtReceived   Boolean @default(false)
+  contractSent      Boolean @default(false)
+  contractSigned    Boolean @default(false)
+  shirtRequested    Boolean @default(false)
+  shirtSent         Boolean @default(false)
+  shirtTrackingCode String? // observação/rastreio informado ao marcar a camiseta como enviada
+  shirtReceived     Boolean @default(false)
 
   teamId String?
   team   Team?   @relation("TeamMembers", fields: [teamId], references: [id])

@@ -33,6 +33,7 @@ const FIELD_GROUPS: FieldGroup[] = [
       { key: "contractSigned", label: "Contrato assinado" },
       { key: "shirtRequested", label: "Camiseta solicitada" },
       { key: "shirtSent", label: "Camiseta enviada" },
+      { key: "shirtTrackingCode", label: "Rastreio da camiseta" },
       { key: "shirtReceived", label: "Camiseta recebida" },
     ],
   },

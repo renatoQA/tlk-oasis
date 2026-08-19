@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { requireRole, requireSession } from "@/lib/session";
 import { canManageTeam } from "@/lib/permissions";
+import type { ActionResult } from "./invite-actions";
 
 export async function toggleContractStatusAction(
   userId: string,
@@ -27,6 +28,21 @@ export async function toggleShirtStatusAction(
   await db.user.update({ where: { id: userId }, data: { [field]: !user[field] } });
 
   revalidatePath("/admin/users");
+}
+
+export async function updateShirtTrackingCodeAction(
+  _prevState: ActionResult | null,
+  formData: FormData
+): Promise<ActionResult> {
+  await requireRole("ADMIN");
+
+  const userId = formData.get("userId") as string;
+  const shirtTrackingCode = (formData.get("shirtTrackingCode") as string) || null;
+
+  await db.user.update({ where: { id: userId }, data: { shirtTrackingCode } });
+
+  revalidatePath("/admin/users");
+  return { ok: true, message: "Observação salva" };
 }
 
 export async function markShirtReceivedAction(userId: string): Promise<void> {

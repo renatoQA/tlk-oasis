@@ -17,6 +17,7 @@ const FIELD_LABELS: Record<string, string> = {
   contractSigned: "Contrato assinado",
   shirtRequested: "Camiseta solicitada",
   shirtSent: "Camiseta enviada",
+  shirtTrackingCode: "Rastreio da camiseta",
   shirtReceived: "Camiseta recebida",
   pixKey: "Chave Pix",
   riotId: "Riot ID",
@@ -54,6 +55,8 @@ function fieldValue(user: UserWithRelations, field: string): string {
       return user.shirtRequested ? "Sim" : "Não";
     case "shirtSent":
       return user.shirtSent ? "Sim" : "Não";
+    case "shirtTrackingCode":
+      return user.shirtTrackingCode ?? "";
     case "shirtReceived":
       return user.shirtReceived ? "Sim" : "Não";
     case "pixKey":
